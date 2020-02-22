@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "mcci:block/causal_machine" }
+  }
+}

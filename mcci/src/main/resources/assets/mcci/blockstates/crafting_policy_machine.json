@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "mcci:block/crafting_policy_machine" }
+  }
+}
