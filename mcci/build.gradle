@@ -1,11 +1,11 @@
 plugins {
-    id 'fabric-loom'
+    id 'fabric-loom' version '0.2.7-SNAPSHOT'
     id 'maven-publish'
     id "org.jetbrains.kotlin.jvm"
 }
 
-sourceCompatibility = JavaVersion.VERSION_14
-targetCompatibility = JavaVersion.VERSION_14
+sourceCompatibility = JavaVersion.VERSION_13
+targetCompatibility = JavaVersion.VERSION_13
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version
@@ -29,9 +29,6 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
-
-    // PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
-    // You may need to force-disable transitiveness on them.
 }
 
 processResources {
@@ -87,4 +84,4 @@ publishing {
     }
 }
 
-compileKotlin.kotlinOptions.jvmTarget = "14"
+compileKotlin.kotlinOptions.jvmTarget = "13"
