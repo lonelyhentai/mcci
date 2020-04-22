@@ -1,7 +1,7 @@
 {
   "required": true,
-  "package": "net.fabricmc.example.mixin",
-  "compatibilityLevel": "JAVA_8",
+  "package": "com.evernightfireworks.mcci.mixin",
+  "compatibilityLevel": "JAVA_13",
   "mixins": [
   ],
   "client": [

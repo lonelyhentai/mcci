@@ -1,29 +1,28 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "mcci",
   "version": "${version}",
-
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "MCCI",
+  "description": "Causal inference of minecraft",
   "authors": [
-    "Me!"
+    "lonelyhentai"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
-  },
-
-  "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
-
+    "homepage": "https://github.com/lonelyhentai/mcci",
+    "sources": "https://github.com/lonelyhentai/mcci"
+  }, "license": "CC0-1.0",
+  "icon": "assets/mcci/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.fabricmc.example.ExampleModKt::init"
+      {
+        "adapter": "kotlin",
+        "value": "com.evernightfireworks.mcci.CausalEngine"
+      }
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "mcci.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.7.1",
