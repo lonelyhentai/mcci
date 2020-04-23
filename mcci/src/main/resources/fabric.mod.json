@@ -15,10 +15,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      {
-        "adapter": "kotlin",
-        "value": "com.evernightfireworks.mcci.CausalEngine"
-      }
+      "com.evernightfireworks.mcci.CausalEngine"
     ]
   },
   "mixins": [
@@ -27,7 +24,6 @@
   "depends": {
     "fabricloader": ">=0.7.1",
     "fabric": "*",
-    "fabric-language-kotlin": "*",
     "minecraft": "1.15.x"
   },
   "suggests": {
