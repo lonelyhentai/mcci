@@ -16,6 +16,9 @@
   "entrypoints": {
     "main": [
       "com.evernightfireworks.mcci.CausalEngine"
+    ],
+    "client": [
+      "com.evernightfireworks.mcci.CausalEngineClient"
     ]
   },
   "mixins": [

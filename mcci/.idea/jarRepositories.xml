@@ -36,5 +36,10 @@
       <option name="name" value="BintrayJCenter" />
       <option name="url" value="https://jcenter.bintray.com/" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="CottonMC" />
+      <option name="name" value="CottonMC" />
+      <option name="url" value="http://server.bbkr.space:8081/artifactory/libs-release" />
+    </remote-repository>
   </component>
 </project>

@@ -13,9 +13,18 @@ group = project.maven_group
 minecraft {
 }
 
+repositories {
+    maven {
+        name = "CottonMC"
+        url = "http://server.bbkr.space:8081/artifactory/libs-release"
+    }
+}
 
 repositories {
-    maven { url = "http://maven.fabricmc.net/" }
+    maven {
+        name = 'Fabric'
+        url = "http://maven.fabricmc.net/"
+    }
 }
 
 dependencies {
@@ -26,6 +35,8 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    modImplementation "io.github.cottonmc:LibGui:${project.libgui_version}"
 }
 
 processResources {
