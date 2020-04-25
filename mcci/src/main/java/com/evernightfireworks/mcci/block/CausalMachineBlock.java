@@ -12,6 +12,9 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.container.BlockContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
+import net.minecraft.recipe.CraftingRecipe;
+import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.RecipeType;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -22,6 +25,10 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class CausalMachineBlock extends Block implements BlockEntityProvider {
     public static Identifier ID = new Identifier("mcci", "causal_machine");
@@ -57,6 +64,12 @@ public class CausalMachineBlock extends Block implements BlockEntityProvider {
         if(!world.isClient) {
             BlockEntity be = world.getBlockEntity(pos);
             ContainerProviderRegistry.INSTANCE.openContainer(ID, player, (packetByteBuf -> packetByteBuf.writeBlockPos(pos)));
+            ArrayList<Recipe<?>> recipes = world.getRecipeManager().values().stream().filter(r->r.getType()== RecipeType.CRAFTING && !r.isIgnoredInRecipeBook()).collect(Collectors.toCollection(ArrayList::new));
+            var r = recipes.get(0);
+            var id = r.getId();
+            var ii = r.isIgnoredInRecipeBook();
+            var o = r.getOutput();
+            o = o;
         }
         return ActionResult.SUCCESS;
     }
