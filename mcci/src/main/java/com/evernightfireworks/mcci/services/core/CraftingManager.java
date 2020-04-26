@@ -8,9 +8,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.stream.Collectors;
 
 public class CraftingManager {
     public HashMap<String, CNode> nodes;
@@ -33,14 +31,14 @@ public class CraftingManager {
         }
     }
 
-    public void createSingleLink(CNode invert, CNode outvert, Object crafting, Identifier craftingId) {
-        var link = new CLink(invert, outvert, crafting, craftingId);
+    public void createSingleLink(CNode invert, CNode outvert, Object crafting, Identifier craftingId, CLinkType kind) {
+        var link = new CLink(invert, outvert, crafting, craftingId, kind);
         this.insertLink(link);
     }
 
-    public void createBinaryLinks(CNode nodeA, CNode nodeB, Object crafting, Identifier craftingId) {
-        this.createSingleLink(nodeA, nodeB, crafting, craftingId);
-        this.createSingleLink(nodeB, nodeA, crafting, craftingId);
+    public void createBinaryLinks(CNode nodeA, CNode nodeB, Object crafting, Identifier craftingId, CLinkType kind) {
+        this.createSingleLink(nodeA, nodeB, crafting, craftingId, kind);
+        this.createSingleLink(nodeB, nodeA, crafting, craftingId, kind);
     }
 
     public void insertLink(CLink link) {
@@ -79,7 +77,7 @@ public class CraftingManager {
         if(item instanceof BlockItem) {
             Block block = ((BlockItem) item).getBlock();
             CNode blockNode = this.getOrCreateNode(Registry.BLOCK.getId(block), CNodeType.block);
-            this.createSingleLink(blockNode, n, "item2block", n.id);
+            this.createSingleLink(blockNode, n, null, n.id, CLinkType.item_block);
         }
     }
 
@@ -88,7 +86,7 @@ public class CraftingManager {
         var lootTableId = block.getDropTableId();
         if(lootTableId!=null) {
             CNode lootNode = this.getOrCreateNode(lootTableId, CNodeType.loot);
-            this.createSingleLink(lootNode, n, "block2loot", n.id);
+            this.createSingleLink(lootNode, n, null, n.id, CLinkType.block_loot);
         }
     }
 
@@ -97,7 +95,7 @@ public class CraftingManager {
         var lootTableId = entity.getLootTableId();
         if(lootTableId!=null) {
             CNode lootNode = this.getOrCreateNode(lootTableId, CNodeType.loot);
-            this.createSingleLink(lootNode, n, "entity2loot", n.id);
+            this.createSingleLink(lootNode, n, null, n.id, CLinkType.entity_loot);
         }
     }
 }

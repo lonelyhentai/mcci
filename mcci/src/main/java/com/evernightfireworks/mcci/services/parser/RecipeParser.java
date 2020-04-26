@@ -1,5 +1,6 @@
 package com.evernightfireworks.mcci.services.parser;
 
+import com.evernightfireworks.mcci.services.core.CLinkType;
 import com.evernightfireworks.mcci.services.core.CNode;
 import com.evernightfireworks.mcci.services.core.CNodeType;
 import com.evernightfireworks.mcci.services.core.CraftingManager;
@@ -33,7 +34,7 @@ public class RecipeParser {
             ItemStack[] entries = i.getMatchingStacksClient();
             for (ItemStack e : entries) {
                 CNode node = this.parseInGradientItem(e);
-                this.manager.createSingleLink(outputNode, node, recipe, recipeId);
+                this.manager.createSingleLink(outputNode, node, recipe, recipeId, CLinkType.recipe);
             }
         }
     }
@@ -43,7 +44,9 @@ public class RecipeParser {
     }
 
     // @TODO
-    void parseCraftingSpecial(SpecialCraftingRecipe recipe, Identifier recipeId) {
+    void parseCraftingSpecial(
+            @SuppressWarnings("unused") SpecialCraftingRecipe recipe,
+            @SuppressWarnings("unused") Identifier recipeId) {
     }
 
     void parseCraftingShaped(ShapedRecipe recipe, Identifier recipeId) {

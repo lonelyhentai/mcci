@@ -9,7 +9,6 @@ import net.minecraft.loot.LootManager;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.tag.RegistryTagManager;
-import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

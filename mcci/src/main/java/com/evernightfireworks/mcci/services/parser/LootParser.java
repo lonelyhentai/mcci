@@ -1,9 +1,9 @@
 package com.evernightfireworks.mcci.services.parser;
 
+import com.evernightfireworks.mcci.services.core.CLinkType;
 import com.evernightfireworks.mcci.services.core.CNode;
 import com.evernightfireworks.mcci.services.core.CNodeType;
 import com.evernightfireworks.mcci.services.core.CraftingManager;
-import com.evernightfireworks.mcci.services.util.FourConsumer;
 import net.minecraft.item.Item;
 import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootPool;
@@ -17,19 +17,21 @@ import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.HashMap;
 
 public class LootParser {
-    private static Logger logger = LogManager.getFormatterLogger("mcci:services:parser:loot");
+    private final Logger logger = LogManager.getFormatterLogger("mcci:services:parser:loot");
     CraftingManager manager;
 
-    private static Object reflectAccessField(Object object, String fieldName, Class targetClass) {
+    private Object reflectAccessField(
+            Object object, String fieldName,
+            @SuppressWarnings("rawtypes") Class targetClass
+    ) {
         try {
             Field targetField = targetClass.getDeclaredField(fieldName);
             targetField.setAccessible(true);
             return targetField.get(object);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            LootParser.logger.error("unexpected field reflect error: " + e.getLocalizedMessage());
+            this.logger.error("unexpected field reflect error: " + e.getLocalizedMessage());
             return null;
         }
     }
@@ -43,16 +45,16 @@ public class LootParser {
         for (Identifier id : ids) {
             CNode lootNode = this.manager.getOrCreateNode(id, CNodeType.loot);
             LootTable lootTable = lootManager.getSupplier(id);
-            var pools = (LootPool[]) LootParser.reflectAccessField(lootTable, "pools", lootTable.getClass());
-            if(pools==null) {
+            var pools = (LootPool[])this.reflectAccessField(lootTable, "pools", lootTable.getClass());
+            if (pools == null) {
                 break;
             }
             for (LootPool pool : pools) {
-                var entries = (LootEntry[]) LootParser.reflectAccessField(pool, "entries", pool.getClass());
-                if(entries==null) {
+                var entries = (LootEntry[])this.reflectAccessField(pool, "entries", pool.getClass());
+                if (entries == null) {
                     break;
                 }
-                for (LootEntry lootEntry: entries) {
+                for (LootEntry lootEntry : entries) {
                     this.parseEntry(lootEntry, lootNode, lootTable);
                 }
             }
@@ -60,33 +62,48 @@ public class LootParser {
     }
 
     void parseItemEntry(ItemEntry entry, CNode lootNode, LootTable lootTable) {
-        Item item = (Item) LootParser.reflectAccessField(entry, "item", entry.getClass());
+        Item item = (Item)this.reflectAccessField(entry, "item", entry.getClass());
         CNode node = this.manager.getOrCreateNode(Registry.ITEM.getId(item), CNodeType.item);
-        this.manager.createSingleLink(node, lootNode, lootTable, lootNode.id);
+        this.manager.createSingleLink(node, lootNode, lootTable, lootNode.id, CLinkType.loot_table);
     }
 
-    void parseEmptyEntry(EmptyEntry entry, CNode lootNode, LootTable lootTable) {
+    void parseEmptyEntry(
+            @SuppressWarnings("unused") EmptyEntry entry,
+            @SuppressWarnings("unused") CNode lootNode,
+            @SuppressWarnings("unused") LootTable lootTable) {
     }
 
     void parseTagEntry(TagEntry entry, CNode lootNode, LootTable lootTable) {
-        Tag<Item> name = (Tag<Item>) LootParser.reflectAccessField(entry, "name", entry.getClass());
-        CNode node = this.manager.getOrCreateNode(name.getId(), CNodeType.tag);
-        this.manager.createSingleLink(node, lootNode, lootTable, lootNode.id);
+        try {
+            @SuppressWarnings("unchecked")
+            Tag<Item> name = (Tag<Item>) this.reflectAccessField(entry, "name", entry.getClass());
+            if(name==null) {
+                this.logger.warn("failed to access tag entry name, skipped");
+                return;
+            }
+            CNode node = this.manager.getOrCreateNode(name.getId(), CNodeType.tag);
+            this.manager.createSingleLink(node, lootNode, lootTable, lootNode.id, CLinkType.loot_table);
+        } catch (ClassCastException e) {
+            this.logger.warn("failed to cast from tag entry's name to Tag<Item>, skipped");
+        }
     }
 
     void parseLootTableEntry(LootTableEntry entry, CNode lootNode, LootTable lootTable) {
-        Identifier id = (Identifier) LootParser.reflectAccessField(entry, "id", entry.getClass());
+        Identifier id = (Identifier)this.reflectAccessField(entry, "id", entry.getClass());
         CNode node = this.manager.getOrCreateNode(id, CNodeType.loot);
-        this.manager.createSingleLink(node, lootNode, lootTable, lootNode.id);
+        this.manager.createSingleLink(node, lootNode, lootTable, lootNode.id, CLinkType.loot_table);
     }
 
     // @TODO
-    void parseDynamicEntry(DynamicEntry entry, CNode lootNode, LootTable lootTable) {
+    void parseDynamicEntry(
+            @SuppressWarnings("unused") DynamicEntry entry,
+            @SuppressWarnings("unused") CNode lootNode,
+            @SuppressWarnings("unused") LootTable lootTable) {
     }
 
     void parseCombinedEntry(CombinedEntry entry, CNode lootNode, LootTable lootTable) {
-        LootEntry[] children = (LootEntry[]) LootParser.reflectAccessField(entry, "children", entry.getClass().getSuperclass());
-        if(children==null) {
+        LootEntry[] children = (LootEntry[]) this.reflectAccessField(entry, "children", entry.getClass().getSuperclass());
+        if (children == null) {
             return;
         }
         Arrays.stream(children).forEach(c -> this.parseEntry(c, lootNode, lootTable));
@@ -105,21 +122,21 @@ public class LootParser {
     }
 
     void parseEntry(LootEntry r, CNode n, LootTable l) {
-        if(r instanceof ItemEntry) {
+        if (r instanceof ItemEntry) {
             parseItemEntry((ItemEntry) r, n, l);
-        } else if(r instanceof EmptyEntry) {
+        } else if (r instanceof EmptyEntry) {
             parseEmptyEntry((EmptyEntry) r, n, l);
-        } else if(r instanceof TagEntry) {
+        } else if (r instanceof TagEntry) {
             parseTagEntry((TagEntry) r, n, l);
-        } else if(r instanceof LootTableEntry) {
+        } else if (r instanceof LootTableEntry) {
             parseLootTableEntry((LootTableEntry) r, n, l);
-        } else if(r instanceof DynamicEntry) {
+        } else if (r instanceof DynamicEntry) {
             parseDynamicEntry((DynamicEntry) r, n, l);
-        } else if(r instanceof GroupEntry) {
+        } else if (r instanceof GroupEntry) {
             parseGroupEntry((GroupEntry) r, n, l);
-        } else if(r instanceof AlternativeEntry) {
+        } else if (r instanceof AlternativeEntry) {
             parseAlternativeEntry((AlternativeEntry) r, n, l);
-        } else if(r instanceof SequenceEntry) {
+        } else if (r instanceof SequenceEntry) {
             parseSequenceEntry((SequenceEntry) r, n, l);
         }
     }

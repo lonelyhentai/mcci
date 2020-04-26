@@ -1,5 +1,6 @@
 package com.evernightfireworks.mcci.services.parser;
 
+import com.evernightfireworks.mcci.services.core.CLinkType;
 import com.evernightfireworks.mcci.services.core.CNode;
 import com.evernightfireworks.mcci.services.core.CNodeType;
 import com.evernightfireworks.mcci.services.core.CraftingManager;
@@ -29,7 +30,7 @@ public class TagParser {
         CNode tagNode = this.manager.getOrCreateNode(identifier, CNodeType.tag);
         for(Item v: tag.values()) {
             CNode itemNode = this.manager.getOrCreateNode(Registry.ITEM.getId(v), CNodeType.item);
-            this.manager.createBinaryLinks(tagNode, itemNode, tag, identifier);
+            this.manager.createBinaryLinks(tagNode, itemNode, tag, identifier, CLinkType.tag);
         }
     }
 
@@ -37,7 +38,7 @@ public class TagParser {
         CNode tagNode = this.manager.getOrCreateNode(identifier, CNodeType.tag);
         for(Fluid v: tag.values()) {
             CNode fluidNode = this.manager.getOrCreateNode(Registry.FLUID.getId(v), CNodeType.fluid);
-            this.manager.createBinaryLinks(tagNode, fluidNode, tag, identifier);
+            this.manager.createBinaryLinks(tagNode, fluidNode, tag, identifier, CLinkType.tag);
         }
     }
 
@@ -45,7 +46,7 @@ public class TagParser {
         CNode tagNode = this.manager.getOrCreateNode(identifier, CNodeType.tag);
         for(Block v: tag.values()) {
             CNode blockTag = this.manager.getOrCreateNode(Registry.BLOCK.getId(v), CNodeType.block);
-            this.manager.createBinaryLinks(tagNode, blockTag, tag, identifier);
+            this.manager.createBinaryLinks(tagNode, blockTag, tag, identifier, CLinkType.tag);
         }
     }
 
@@ -53,7 +54,7 @@ public class TagParser {
         CNode tagNode = this.manager.getOrCreateNode(identifier, CNodeType.tag);
         for(EntityType<?> v: tag.values()) {
             CNode blockTag = this.manager.getOrCreateNode(Registry.ENTITY_TYPE.getId(v), CNodeType.entity);
-            this.manager.createBinaryLinks(tagNode, blockTag, tag, identifier);
+            this.manager.createBinaryLinks(tagNode, blockTag, tag, identifier, CLinkType.tag);
         }
     }
 }

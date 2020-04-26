@@ -7,11 +7,13 @@ public class CLink {
     CNode outvert;
     Object info;
     Identifier infoId;
-    public CLink(CNode invert, CNode outvert, Object info, Identifier infoId) {
+    CLinkType kind;
+    public CLink(CNode invert, CNode outvert, Object info, Identifier infoId, CLinkType kind) {
         this.invert = invert;
         this.outvert = outvert;
         this.info = info;
         this.infoId = infoId;
+        this.kind = kind;
     }
 
     public static String buildKey(CNode invert, CNode outvert) {
