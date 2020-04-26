@@ -1,9 +1,16 @@
 package com.evernightfireworks.mcci.services.core;
 
+import net.minecraft.block.Block;
+import net.minecraft.entity.EntityType;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 public class CraftingManager {
     public HashMap<String, CNode> nodes;
@@ -46,6 +53,51 @@ public class CraftingManager {
             var newList = new ArrayList<CLink>();
             newList.add(link);
             this.links.put(key, newList);
+        }
+    }
+
+    public void completeLinks() {
+        var nodes = new ArrayList<>(this.nodes.values());
+        for(var n: nodes) {
+            if(n.kind==CNodeType.item) {
+                this.linkItemBlock(n);
+            }
+        }
+        nodes = new ArrayList<>(this.nodes.values());
+        for(var n: nodes) {
+            if(n.kind==CNodeType.block) {
+                this.linkBlockLoot(n);
+            }
+            else if(n.kind==CNodeType.entity) {
+                this.linkEntityLoot(n);
+            }
+        }
+    }
+
+    public void linkItemBlock(CNode n) {
+        Item item = Registry.ITEM.get(n.id);
+        if(item instanceof BlockItem) {
+            Block block = ((BlockItem) item).getBlock();
+            CNode blockNode = this.getOrCreateNode(Registry.BLOCK.getId(block), CNodeType.block);
+            this.createSingleLink(blockNode, n, "item2block", n.id);
+        }
+    }
+
+    public void linkBlockLoot(CNode n) {
+        Block block = Registry.BLOCK.get(n.id);
+        var lootTableId = block.getDropTableId();
+        if(lootTableId!=null) {
+            CNode lootNode = this.getOrCreateNode(lootTableId, CNodeType.loot);
+            this.createSingleLink(lootNode, n, "block2loot", n.id);
+        }
+    }
+
+    public void linkEntityLoot(CNode n) {
+        EntityType<?> entity =  Registry.ENTITY_TYPE.get(n.id);
+        var lootTableId = entity.getLootTableId();
+        if(lootTableId!=null) {
+            CNode lootNode = this.getOrCreateNode(lootTableId, CNodeType.loot);
+            this.createSingleLink(lootNode, n, "entity2loot", n.id);
         }
     }
 }

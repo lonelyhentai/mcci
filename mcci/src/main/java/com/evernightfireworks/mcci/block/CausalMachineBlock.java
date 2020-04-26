@@ -1,20 +1,25 @@
 package com.evernightfireworks.mcci.block;
 
+import com.evernightfireworks.mcci.CausalEngine;
 import com.evernightfireworks.mcci.gui.CausalMachineBlockController;
 import com.evernightfireworks.mcci.gui.CausalMachineBlockScreen;
+import com.evernightfireworks.mcci.services.CraftingPolicyService;
 import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
+import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.container.BlockContext;
+import net.minecraft.data.server.FishingLootTableGenerator;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
-import net.minecraft.recipe.CraftingRecipe;
+import net.minecraft.loot.LootManager;
+import net.minecraft.loot.LootTables;
 import net.minecraft.recipe.Recipe;
-import net.minecraft.recipe.RecipeType;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -28,6 +33,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class CausalMachineBlock extends Block implements BlockEntityProvider {
@@ -64,15 +70,12 @@ public class CausalMachineBlock extends Block implements BlockEntityProvider {
         if(!world.isClient) {
             BlockEntity be = world.getBlockEntity(pos);
             ContainerProviderRegistry.INSTANCE.openContainer(ID, player, (packetByteBuf -> packetByteBuf.writeBlockPos(pos)));
-            ArrayList<Recipe<?>> recipes = world.getRecipeManager().values().stream().filter(r->r.getType()== RecipeType.CRAFTING && !r.isIgnoredInRecipeBook()).collect(Collectors.toCollection(ArrayList::new));
-            var r = recipes.get(0);
-            var id = r.getId();
-            var ii = r.isIgnoredInRecipeBook();
-            var o = r.getOutput();
-            o = o;
+            CausalEngine.CRAFTING_POLICY_SERVICE.generateCraftingGraph((ServerWorld) world);
         }
         return ActionResult.SUCCESS;
     }
+
+
 
     @Override
     public BlockEntity createBlockEntity(BlockView var1) {

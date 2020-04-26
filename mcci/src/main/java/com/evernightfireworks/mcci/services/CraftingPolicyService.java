@@ -1,27 +1,64 @@
 package com.evernightfireworks.mcci.services;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.loot.LootTables;
-import net.minecraft.recipe.Recipe;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import com.evernightfireworks.mcci.services.core.CraftingManager;
+import com.evernightfireworks.mcci.services.parser.LootParser;
+import com.evernightfireworks.mcci.services.parser.RecipeParser;
+import com.evernightfireworks.mcci.services.parser.TagParser;
+import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
+import net.minecraft.loot.LootManager;
+import net.minecraft.recipe.RecipeManager;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.tag.RegistryTagManager;
 import net.minecraft.world.World;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.HashSet;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class CraftingPolicyService {
-    public static void generateCraftingTree(World world, ItemStack stack) {
-        var lootTables = LootTables.getAll();
-        var recipes = world.getRecipeManager().values();
+    public static HashSet<LootManager> lootManagers = new HashSet<>();
 
-        var tagManager = world.getTagManager();
-        var itemTags = tagManager.items().getEntries();
-        var blockTags = tagManager.blocks().getEntries();
-        var entityTags = tagManager.entityTypes().getEntries();
-        var fluidTags = tagManager.fluids().getEntries();
+    public static void registerMain() {
+        LootTableLoadingCallback.EVENT.register(((resourceManager, lootManager, identifier, fabricLootSupplierBuilder, lootTableSetter) -> {
+            CraftingPolicyService.lootManagers.add(lootManager);
+        }));
+    }
+    Logger logger = LogManager.getFormatterLogger("mcci:services:crafting_policy_service");
+    CraftingManager manager;
+    RecipeParser recipeParser;
+    LootParser lootParser;
+    TagParser tagParser;
+    Boolean generated;
 
+    public CraftingPolicyService() {
+        manager = new CraftingManager();
+        recipeParser = new RecipeParser(manager);
+        lootParser = new LootParser(manager);
+        tagParser = new TagParser(manager);
+        generated = false;
+    }
+
+    public void generateCraftingGraph(ServerWorld world) {
+        synchronized(this) {
+            if(this.generated) {
+                this.logger.info("use crafting graph caches");
+                return;
+            }
+            this.logger.info("start generating crafting graph...");
+            RecipeManager recipeManager = world.getRecipeManager();
+            RegistryTagManager tagManager = world.getTagManager();
+            this.logger.info("parsing tags crafting...");
+            this.tagParser.parseTags(tagManager);
+            this.logger.info("parsing recipes crafting...");
+            this.recipeParser.parseRecipes(recipeManager);
+            this.logger.info("parsing loots crafting...");
+            for(var lootManager: CraftingPolicyService.lootManagers) {
+                this.lootParser.parseLoot(lootManager);
+            }
+            this.logger.info("completing remained links...");
+            this.manager.completeLinks();
+            this.generated = true;
+            this.logger.info("crafting graph generated");
+        }
     }
 }

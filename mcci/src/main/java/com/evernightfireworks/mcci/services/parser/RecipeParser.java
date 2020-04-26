@@ -3,26 +3,14 @@ package com.evernightfireworks.mcci.services.parser;
 import com.evernightfireworks.mcci.services.core.CNode;
 import com.evernightfireworks.mcci.services.core.CNodeType;
 import com.evernightfireworks.mcci.services.core.CraftingManager;
-import com.evernightfireworks.mcci.services.util.TriConsumer;
+import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-import java.util.HashMap;
-
 public class RecipeParser {
     CraftingManager manager;
-    final HashMap<RecipeType<?>, TriConsumer<RecipeParser, Recipe<?>, Identifier>> parseMapping = new HashMap<>() {
-        {
-            parseMapping.put(RecipeType.BLASTING, (p, r, i) -> p.parseBlasting((BlastingRecipe) r, i));
-            parseMapping.put(RecipeType.CRAFTING, (p, r, i) -> p.parseCrafting((CraftingRecipe) r, i));
-            parseMapping.put(RecipeType.CAMPFIRE_COOKING, (p, r, i) -> p.parseCampfireCooking((CampfireCookingRecipe) r, i));
-            parseMapping.put(RecipeType.SMELTING, (p, r, i) -> p.parseSmelting((SmeltingRecipe) r, i));
-            parseMapping.put(RecipeType.SMOKING, (p, r, i) -> p.parseSmoking((SmokingRecipe) r, i));
-            parseMapping.put(RecipeType.STONECUTTING, (p, r, i) -> p.parseStoneCutting((StonecuttingRecipe) r, i));
-        }
-    };
 
     public RecipeParser(CraftingManager manager) {
         this.manager = manager;
@@ -31,7 +19,7 @@ public class RecipeParser {
     CNode parseInGradientItem(ItemStack stack) {
         if (stack.hasTag()) {
             assert stack.getTag() != null;
-            return this.manager.getOrCreateNode(new Identifier(stack.getTag().toString()), CNodeType.tag);
+            return this.manager.getOrCreateNode(new Identifier(stack.getTag().getString("item")), CNodeType.tag);
         } else {
             return this.manager.getOrCreateNode(Registry.ITEM.getId(stack.getItem()), CNodeType.item);
         }
@@ -63,11 +51,11 @@ public class RecipeParser {
     }
 
     void parseCrafting(CraftingRecipe recipe, Identifier recipeId) {
-        if (recipe.isIgnoredInRecipeBook()) {
+        if (recipe instanceof SpecialCraftingRecipe) {
             this.parseCraftingSpecial((SpecialCraftingRecipe) recipe, recipeId);
         } else if(recipe instanceof ShapedRecipe) {
             this.parseCraftingShaped((ShapedRecipe)recipe, recipeId);
-        } else {
+        } else if(recipe instanceof ShapelessRecipe) {
             this.parseCraftingShapeless((ShapelessRecipe) recipe, recipeId);
         }
     }
@@ -96,9 +84,20 @@ public class RecipeParser {
         recipes
                 .values()
                 .forEach((r) -> {
-                    var fun = this.parseMapping.get(r.getType());
-                    if (fun != null) {
-                        fun.accept(this, r, r.getId());
+                    var type = r.getType();
+                    var i = r.getId();
+                    if(type==RecipeType.BLASTING) {
+                        parseBlasting((BlastingRecipe) r, i);
+                    } else if(type==RecipeType.CRAFTING) {
+                        parseCrafting((CraftingRecipe) r, i);
+                    } else if(type==RecipeType.CAMPFIRE_COOKING) {
+                        parseCampfireCooking((CampfireCookingRecipe) r, i);
+                    } else if(type==RecipeType.SMELTING) {
+                        parseSmelting((SmeltingRecipe) r, i);
+                    } else if(type==RecipeType.SMOKING) {
+                        parseSmoking((SmokingRecipe) r, i);
+                    } else if(type==RecipeType.STONECUTTING) {
+                        parseStoneCutting((StonecuttingRecipe) r, i);
                     }
                 });
     }
