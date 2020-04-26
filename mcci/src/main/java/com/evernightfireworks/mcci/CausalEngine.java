@@ -5,6 +5,7 @@ import com.evernightfireworks.mcci.services.CraftingPolicyService;
 import net.fabricmc.api.ModInitializer;
 
 
+import net.minecraft.server.WorldGenerationProgressListener;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

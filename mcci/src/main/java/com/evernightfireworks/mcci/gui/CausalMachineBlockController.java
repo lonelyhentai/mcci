@@ -1,6 +1,10 @@
 package com.evernightfireworks.mcci.gui;
 
+import com.evernightfireworks.mcci.CausalEngine;
+import com.evernightfireworks.mcci.services.CraftingPolicyService;
+import com.evernightfireworks.mcci.services.core.CGraph;
 import io.github.cottonmc.cotton.gui.CottonCraftingController;
+import io.github.cottonmc.cotton.gui.ValidatedSlot;
 import io.github.cottonmc.cotton.gui.widget.WGridPanel;
 import io.github.cottonmc.cotton.gui.widget.WItemSlot;
 import net.minecraft.container.BlockContext;
@@ -8,6 +12,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.recipe.RecipeType;
 
 public class CausalMachineBlockController extends CottonCraftingController {
+
     public CausalMachineBlockController(int syncId, PlayerInventory playerInventory, BlockContext context) {
         super(RecipeType.CRAFTING, syncId, playerInventory, getBlockInventory(context), getBlockPropertyDelegate(context));
 

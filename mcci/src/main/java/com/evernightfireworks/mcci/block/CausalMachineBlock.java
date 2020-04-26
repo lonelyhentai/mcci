@@ -3,22 +3,17 @@ package com.evernightfireworks.mcci.block;
 import com.evernightfireworks.mcci.CausalEngine;
 import com.evernightfireworks.mcci.gui.CausalMachineBlockController;
 import com.evernightfireworks.mcci.gui.CausalMachineBlockScreen;
-import com.evernightfireworks.mcci.services.CraftingPolicyService;
 import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
-import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
+import net.fabricmc.fabric.api.event.server.ServerStartCallback;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.container.BlockContext;
-import net.minecraft.data.server.FishingLootTableGenerator;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
-import net.minecraft.loot.LootManager;
-import net.minecraft.loot.LootTables;
-import net.minecraft.recipe.Recipe;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -31,17 +26,12 @@ import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-
 public class CausalMachineBlock extends Block implements BlockEntityProvider {
-    public static Identifier ID = new Identifier("mcci", "causal_machine");
-    private final static Logger logger = LogManager.getFormatterLogger(ID.toString());
-    public static BlockEntityType<CausalMachineBlockEntity> ENTITY;
+    public static final Identifier ID = new Identifier("mcci", "causal_machine");
+    private static final Logger logger = LogManager.getFormatterLogger("mcci:blocks:causal_machine");
     public static final Block BLOCK = new CausalMachineBlock(CausalBlocks.MACHINE_BLOCK_TEMPLATE.drops(ID).build());
     public static final BlockItem ITEM = new BlockItem(BLOCK, CausalBlocks.MACHINE_ITEM_TEMPLATE);
+    public static BlockEntityType<CausalMachineBlockEntity> ENTITY;
 
     public static void registerMain() {
         Registry.register(Registry.BLOCK, ID, BLOCK);

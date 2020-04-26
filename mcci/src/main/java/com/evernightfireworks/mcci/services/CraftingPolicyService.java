@@ -1,14 +1,19 @@
 package com.evernightfireworks.mcci.services;
 
+import com.evernightfireworks.mcci.services.core.CGraph;
 import com.evernightfireworks.mcci.services.core.CraftingManager;
 import com.evernightfireworks.mcci.services.parser.LootParser;
 import com.evernightfireworks.mcci.services.parser.RecipeParser;
 import com.evernightfireworks.mcci.services.parser.TagParser;
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
+import net.minecraft.item.Item;
 import net.minecraft.loot.LootManager;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.tag.RegistryTagManager;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,7 +27,7 @@ public class CraftingPolicyService {
             CraftingPolicyService.lootManagers.add(lootManager);
         }));
     }
-    Logger logger = LogManager.getFormatterLogger("mcci:services:crafting_policy_service");
+    private final Logger logger = LogManager.getFormatterLogger("mcci:services:crafting_policy_service");
     CraftingManager manager;
     RecipeParser recipeParser;
     LootParser lootParser;
@@ -37,7 +42,7 @@ public class CraftingPolicyService {
         generated = false;
     }
 
-    public void generateCraftingGraph(ServerWorld world) {
+    public void generateCraftingGraph(World world) {
         synchronized(this) {
             if(this.generated) {
                 this.logger.info("use crafting graph caches");
@@ -55,9 +60,24 @@ public class CraftingPolicyService {
                 this.lootParser.parseLoot(lootManager);
             }
             this.logger.info("completing remained links...");
-            this.manager.completeLinks();
+            this.manager.completeGlobalRemainLinks();
             this.generated = true;
             this.logger.info("crafting graph generated");
         }
+    }
+
+    public CGraph getSubCraftingGraph(World world, Item item) {
+        this.logger.info("start getting crafting sub graph...");
+        if(!this.generated) {
+            this.generateCraftingGraph(world);
+        }
+        var res = this.manager.getSubgraphOfGlobal(item);
+        String itemId = Registry.ITEM.getId(item).toString();
+        if(res==null) {
+            this.logger.error(String.format("unexpected logic error, can not find target item '%s' in this manager, return null", itemId));
+        } else {
+            this.logger.info(String.format("crafting sub graph of item '%s' has generated", itemId));
+        }
+        return res;
     }
 }

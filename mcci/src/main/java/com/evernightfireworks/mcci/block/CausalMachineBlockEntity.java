@@ -1,5 +1,7 @@
 package com.evernightfireworks.mcci.block;
 
+import com.evernightfireworks.mcci.CausalEngine;
+import com.evernightfireworks.mcci.services.CraftingPolicyService;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
@@ -34,5 +36,19 @@ public class CausalMachineBlockEntity extends BlockEntity implements CausalMachi
     public CompoundTag toTag(CompoundTag tag) {
         Inventories.toTag(tag, items);
         return super.toTag(tag);
+    }
+
+    @Override
+    public void setInvStack(int slot, ItemStack stack) {
+        getItems().set(slot, stack);
+        if(stack.getCount() > getInvMaxStackAmount()) {
+            stack.setCount(getInvMaxStackAmount());
+        }
+        if(this.world!=null&&!this.world.isClient()) {
+            CraftingPolicyService service = CausalEngine.CRAFTING_POLICY_SERVICE;
+            var item = stack.getItem();
+            var subgraph = service.getSubCraftingGraph(this.world, item);
+            subgraph = subgraph;
+        }
     }
 }

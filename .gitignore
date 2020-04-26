@@ -1,5 +1,2 @@
-lib/*
-!lib/*-natives/
-lib/*-natives/*
 savedata/*
 !**/.gitkeep

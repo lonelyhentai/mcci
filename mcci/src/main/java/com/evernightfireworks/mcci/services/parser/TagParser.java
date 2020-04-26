@@ -27,34 +27,34 @@ public class TagParser {
     }
 
     void parseItemTag(Identifier identifier, Tag<Item> tag) {
-        CNode tagNode = this.manager.getOrCreateNode(identifier, CNodeType.tag);
+        CNode tagNode = this.manager.getOrCreateGlobalNode(identifier, CNodeType.tag);
         for(Item v: tag.values()) {
-            CNode itemNode = this.manager.getOrCreateNode(Registry.ITEM.getId(v), CNodeType.item);
-            this.manager.createBinaryLinks(tagNode, itemNode, tag, identifier, CLinkType.tag);
+            CNode itemNode = this.manager.getOrCreateGlobalNode(Registry.ITEM.getId(v), CNodeType.item);
+            this.manager.createGlobalBinaryLinks(tagNode, itemNode, tag, identifier, CLinkType.tag);
         }
     }
 
     void parseFluidTag(Identifier identifier, Tag<Fluid> tag) {
-        CNode tagNode = this.manager.getOrCreateNode(identifier, CNodeType.tag);
+        CNode tagNode = this.manager.getOrCreateGlobalNode(identifier, CNodeType.tag);
         for(Fluid v: tag.values()) {
-            CNode fluidNode = this.manager.getOrCreateNode(Registry.FLUID.getId(v), CNodeType.fluid);
-            this.manager.createBinaryLinks(tagNode, fluidNode, tag, identifier, CLinkType.tag);
+            CNode fluidNode = this.manager.getOrCreateGlobalNode(Registry.FLUID.getId(v), CNodeType.fluid);
+            this.manager.createGlobalBinaryLinks(tagNode, fluidNode, tag, identifier, CLinkType.tag);
         }
     }
 
     void parseBlockTag(Identifier identifier, Tag<Block> tag) {
-        CNode tagNode = this.manager.getOrCreateNode(identifier, CNodeType.tag);
+        CNode tagNode = this.manager.getOrCreateGlobalNode(identifier, CNodeType.tag);
         for(Block v: tag.values()) {
-            CNode blockTag = this.manager.getOrCreateNode(Registry.BLOCK.getId(v), CNodeType.block);
-            this.manager.createBinaryLinks(tagNode, blockTag, tag, identifier, CLinkType.tag);
+            CNode blockTag = this.manager.getOrCreateGlobalNode(Registry.BLOCK.getId(v), CNodeType.block);
+            this.manager.createGlobalBinaryLinks(tagNode, blockTag, tag, identifier, CLinkType.tag);
         }
     }
 
     void parseEntityTypeTag(Identifier identifier, Tag<EntityType<?>> tag) {
-        CNode tagNode = this.manager.getOrCreateNode(identifier, CNodeType.tag);
+        CNode tagNode = this.manager.getOrCreateGlobalNode(identifier, CNodeType.tag);
         for(EntityType<?> v: tag.values()) {
-            CNode blockTag = this.manager.getOrCreateNode(Registry.ENTITY_TYPE.getId(v), CNodeType.entity);
-            this.manager.createBinaryLinks(tagNode, blockTag, tag, identifier, CLinkType.tag);
+            CNode blockTag = this.manager.getOrCreateGlobalNode(Registry.ENTITY_TYPE.getId(v), CNodeType.entity);
+            this.manager.createGlobalBinaryLinks(tagNode, blockTag, tag, identifier, CLinkType.tag);
         }
     }
 }

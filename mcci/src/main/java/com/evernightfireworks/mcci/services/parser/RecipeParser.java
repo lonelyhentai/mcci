@@ -4,7 +4,6 @@ import com.evernightfireworks.mcci.services.core.CLinkType;
 import com.evernightfireworks.mcci.services.core.CNode;
 import com.evernightfireworks.mcci.services.core.CNodeType;
 import com.evernightfireworks.mcci.services.core.CraftingManager;
-import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.*;
 import net.minecraft.util.Identifier;
@@ -20,21 +19,21 @@ public class RecipeParser {
     CNode parseInGradientItem(ItemStack stack) {
         if (stack.hasTag()) {
             assert stack.getTag() != null;
-            return this.manager.getOrCreateNode(new Identifier(stack.getTag().getString("item")), CNodeType.tag);
+            return this.manager.getOrCreateGlobalNode(new Identifier(stack.getTag().getString("item")), CNodeType.tag);
         } else {
-            return this.manager.getOrCreateNode(Registry.ITEM.getId(stack.getItem()), CNodeType.item);
+            return this.manager.getOrCreateGlobalNode(Registry.ITEM.getId(stack.getItem()), CNodeType.item);
         }
     }
 
     void parseInGradients(Recipe<?> recipe, Identifier recipeId) {
         ItemStack outputItem = recipe.getOutput();
-        CNode outputNode = this.manager.getOrCreateNode(Registry.ITEM.getId(outputItem.getItem()), CNodeType.item);
+        CNode outputNode = this.manager.getOrCreateGlobalNode(Registry.ITEM.getId(outputItem.getItem()), CNodeType.item);
         var inputs = recipe.getPreviewInputs();
         for (Ingredient i : inputs) {
             ItemStack[] entries = i.getMatchingStacksClient();
             for (ItemStack e : entries) {
                 CNode node = this.parseInGradientItem(e);
-                this.manager.createSingleLink(outputNode, node, recipe, recipeId, CLinkType.recipe);
+                this.manager.createGlobalSingleLink(outputNode, node, recipe, recipeId, CLinkType.recipe);
             }
         }
     }
