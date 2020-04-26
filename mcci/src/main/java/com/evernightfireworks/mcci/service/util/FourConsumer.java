@@ -1,4 +1,4 @@
-package com.evernightfireworks.mcci.services.util;
+package com.evernightfireworks.mcci.service.util;
 
 import java.util.Objects;
 

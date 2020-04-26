@@ -1,11 +1,10 @@
 package com.evernightfireworks.mcci;
 
 import com.evernightfireworks.mcci.block.CausalBlocks;
-import com.evernightfireworks.mcci.services.CraftingPolicyService;
+import com.evernightfireworks.mcci.service.CraftingPolicyService;
 import net.fabricmc.api.ModInitializer;
 
 
-import net.minecraft.server.WorldGenerationProgressListener;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

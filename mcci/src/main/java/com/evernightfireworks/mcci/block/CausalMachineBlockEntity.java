@@ -1,7 +1,7 @@
 package com.evernightfireworks.mcci.block;
 
 import com.evernightfireworks.mcci.CausalEngine;
-import com.evernightfireworks.mcci.services.CraftingPolicyService;
+import com.evernightfireworks.mcci.service.CraftingPolicyService;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;

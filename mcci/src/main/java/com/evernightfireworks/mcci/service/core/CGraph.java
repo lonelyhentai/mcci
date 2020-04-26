@@ -1,4 +1,4 @@
-package com.evernightfireworks.mcci.services.core;
+package com.evernightfireworks.mcci.service.core;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;

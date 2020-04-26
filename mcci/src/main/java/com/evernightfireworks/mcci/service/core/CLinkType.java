@@ -1,4 +1,4 @@
-package com.evernightfireworks.mcci.services.core;
+package com.evernightfireworks.mcci.service.core;
 
 public enum CLinkType {
     item_block,

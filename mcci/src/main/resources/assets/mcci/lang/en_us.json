@@ -2,5 +2,6 @@
   "block.mcci.causal_machine": "Causal Machine",
   "block.mcci.crafting_policy_machine": "Crafting Policy Machine",
   "block.mcci.demand_policy_machine": "Demand Policy Machine",
-  "itemGroup.mcci.general": "Causal General"
+  "itemGroup.mcci.general": "Causal General",
+  "gui.mcci.causal_machine.generation_button": "generate"
 }

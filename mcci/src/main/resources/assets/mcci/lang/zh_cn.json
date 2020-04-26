@@ -2,5 +2,6 @@
   "block.mcci.causal_machine": "因果机",
   "block.mcci.crafting_policy_machine": "生产决策机",
   "block.mcci.demand_policy_machine": "需求决策机",
-  "itemGroup.mcci.general": "因果通用"
+  "itemGroup.mcci.general": "因果通用",
+  "gui.mcci.causal_machine.generation_button": "生成"
 }

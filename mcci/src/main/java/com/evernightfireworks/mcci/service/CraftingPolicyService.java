@@ -1,18 +1,16 @@
-package com.evernightfireworks.mcci.services;
+package com.evernightfireworks.mcci.service;
 
-import com.evernightfireworks.mcci.services.core.CGraph;
-import com.evernightfireworks.mcci.services.core.CraftingManager;
-import com.evernightfireworks.mcci.services.parser.LootParser;
-import com.evernightfireworks.mcci.services.parser.RecipeParser;
-import com.evernightfireworks.mcci.services.parser.TagParser;
+import com.evernightfireworks.mcci.service.core.CGraph;
+import com.evernightfireworks.mcci.service.core.CraftingManager;
+import com.evernightfireworks.mcci.service.parser.LootParser;
+import com.evernightfireworks.mcci.service.parser.RecipeParser;
+import com.evernightfireworks.mcci.service.parser.TagParser;
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
 import net.minecraft.item.Item;
 import net.minecraft.loot.LootManager;
 import net.minecraft.recipe.RecipeManager;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.tag.RegistryTagManager;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

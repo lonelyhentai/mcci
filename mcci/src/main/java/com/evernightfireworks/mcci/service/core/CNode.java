@@ -1,4 +1,4 @@
-package com.evernightfireworks.mcci.services.core;
+package com.evernightfireworks.mcci.service.core;
 
 import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.tuple.ImmutablePair;

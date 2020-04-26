@@ -1,9 +1,9 @@
-package com.evernightfireworks.mcci.services.parser;
+package com.evernightfireworks.mcci.service.parser;
 
-import com.evernightfireworks.mcci.services.core.CLinkType;
-import com.evernightfireworks.mcci.services.core.CNode;
-import com.evernightfireworks.mcci.services.core.CNodeType;
-import com.evernightfireworks.mcci.services.core.CraftingManager;
+import com.evernightfireworks.mcci.service.core.CLinkType;
+import com.evernightfireworks.mcci.service.core.CNode;
+import com.evernightfireworks.mcci.service.core.CNodeType;
+import com.evernightfireworks.mcci.service.core.CraftingManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.*;
 import net.minecraft.util.Identifier;

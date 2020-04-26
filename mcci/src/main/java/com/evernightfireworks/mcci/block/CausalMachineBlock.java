@@ -1,11 +1,9 @@
 package com.evernightfireworks.mcci.block;
 
-import com.evernightfireworks.mcci.CausalEngine;
-import com.evernightfireworks.mcci.gui.CausalMachineBlockController;
-import com.evernightfireworks.mcci.gui.CausalMachineBlockScreen;
+import com.evernightfireworks.mcci.gui.controller.CausalMachineBlockController;
+import com.evernightfireworks.mcci.gui.widget.CausalMachineBlockScreen;
 import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
-import net.fabricmc.fabric.api.event.server.ServerStartCallback;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
@@ -14,7 +12,6 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.container.BlockContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -60,7 +57,6 @@ public class CausalMachineBlock extends Block implements BlockEntityProvider {
         if(!world.isClient) {
             BlockEntity be = world.getBlockEntity(pos);
             ContainerProviderRegistry.INSTANCE.openContainer(ID, player, (packetByteBuf -> packetByteBuf.writeBlockPos(pos)));
-            CausalEngine.CRAFTING_POLICY_SERVICE.generateCraftingGraph((ServerWorld) world);
         }
         return ActionResult.SUCCESS;
     }
