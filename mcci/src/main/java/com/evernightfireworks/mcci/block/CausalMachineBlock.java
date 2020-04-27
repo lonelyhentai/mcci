@@ -1,7 +1,7 @@
 package com.evernightfireworks.mcci.block;
 
 import com.evernightfireworks.mcci.gui.controller.CausalMachineBlockController;
-import com.evernightfireworks.mcci.gui.widget.CausalMachineBlockScreen;
+import com.evernightfireworks.mcci.gui.screen.CausalMachineBlockScreen;
 import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.minecraft.block.Block;

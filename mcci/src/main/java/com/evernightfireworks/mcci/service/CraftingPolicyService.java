@@ -15,6 +15,7 @@ import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
 import java.util.HashSet;
 
 public class CraftingPolicyService {
@@ -71,8 +72,8 @@ public class CraftingPolicyService {
         }
         var res = this.manager.getSubgraphOfGlobal(item);
         String itemId = Registry.ITEM.getId(item).toString();
-        if(res==null) {
-            this.logger.error(String.format("unexpected logic error, can not find target item '%s' in this manager, return null", itemId));
+        if(res.target==null) {
+            this.logger.warn(String.format("can not find target item '%s' in global graph", itemId));
         } else {
             this.logger.info(String.format("crafting sub graph of item '%s' has generated", itemId));
         }

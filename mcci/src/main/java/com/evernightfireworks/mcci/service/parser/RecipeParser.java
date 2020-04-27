@@ -8,21 +8,20 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RecipeParser {
     CraftingManager manager;
+
+    private final Logger logger = LogManager.getFormatterLogger("mcci:server:parser:recipe_parser");
 
     public RecipeParser(CraftingManager manager) {
         this.manager = manager;
     }
 
     CNode parseInGradientItem(ItemStack stack) {
-        if (stack.hasTag()) {
-            assert stack.getTag() != null;
-            return this.manager.getOrCreateGlobalNode(new Identifier(stack.getTag().getString("item")), CNodeType.tag);
-        } else {
-            return this.manager.getOrCreateGlobalNode(Registry.ITEM.getId(stack.getItem()), CNodeType.item);
-        }
+        return this.manager.getOrCreateGlobalNode(Registry.ITEM.getId(stack.getItem()), CNodeType.item);
     }
 
     void parseInGradients(Recipe<?> recipe, Identifier recipeId) {
@@ -33,7 +32,7 @@ public class RecipeParser {
             ItemStack[] entries = i.getMatchingStacksClient();
             for (ItemStack e : entries) {
                 CNode node = this.parseInGradientItem(e);
-                this.manager.createGlobalSingleLink(outputNode, node, recipe, recipeId, CLinkType.recipe);
+                this.manager.createGlobalSingleLink(outputNode, node, recipe.toString(), recipeId, CLinkType.recipe);
             }
         }
     }

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Crafting-Graph</title>
+    <script src="https://cdn.bootcss.com/echarts/4.7.0/echarts.min.js"></script>
+    <style>
+        html {
+            margin: 0;
+            border: 0;
+        }
+        body {
+            margin: 0;
+            border: 0;
+        }
+        #graph {
+            height: 100vh;
+            width: 100vw;
+        }
+    </style>
+</head>
+<body>
+<div id="graph"></div>
+<script type="text/javascript">
+    const data = {/*data*/};
+    function debounce(fn, wait, immediate = true) {
+        let timer;
+        const later = (context, args) => setTimeout(()=>{
+            timer = null;
+            if(!immediate) {
+                fn.apply(context, args);
+            }
+        }, wait);
+        const debounced = function (...params) {
+            const context = this;
+            const args = params;
+            if(!timer) {
+                timer = later(context, args);
+                if(immediate) {
+                    fn.apply(context, args);
+                }
+            } else {
+                clearTimeout(timer);
+                timer = later(context, args);
+            }
+        }
+        debounced.cancel = function() {
+            clearTimeout(timer);
+            timer = null;
+        };
+        return debounced;
+    }
+    window.onload = () => {
+        const element = document.querySelector("#graph");
+        const chart = echarts.init(element);
+        window.onresize = debounce(() => {
+            chart.resize();
+        }, 100, false);
+        chart.hideLoading();
+        const option = {
+            title: {
+                text: `${data.title}: ${data.target}`
+            },
+            legend: [{
+                bottom: 10,
+                data: data.categories.map(a => a.name)
+            }],
+            tooltip: {
+                formatter: (params) => {
+                    let res = "";
+                    const current = params.data;
+                    if(params.dataType==='node') {
+                        res = `<b>${data.categories[current.category].name}</b>@${current.name}`;
+                    }
+                    else if(params.dataType==="edge") {
+                        res = `<b>${data.linkCategories[current.kind].name}</b>@${data.nodes[current.source].name}>${data.nodes[current.target].name}`;
+                    }
+                    else if(params.dataType==="category") {
+                        res = `${current.name}`;
+                    }
+                    return res;
+                }
+            },
+            series: [
+                {
+                    type: 'graph',
+                    layout: 'force',
+                    draggable: true,
+                    animation: false,
+                    lineStyle: {
+                        color: 'source',
+                        width: 2,
+                    },
+                    //focusNodeAdjacency: true,
+                    data: data.nodes,
+                    categories: data.categories,
+                    roam: false,
+                    force: {
+                        edgeLength: 5,
+                        repulsion: 20,
+                        gravity: 0.2
+                    },
+                    edges: data.links,
+                }
+            ]
+        };
+        chart.setOption(option, true);
+    }
+</script>
+</body>
+</html>

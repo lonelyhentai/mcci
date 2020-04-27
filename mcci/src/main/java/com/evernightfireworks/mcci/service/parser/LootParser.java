@@ -64,7 +64,7 @@ public class LootParser {
     void parseItemEntry(ItemEntry entry, CNode lootNode, LootTable lootTable) {
         Item item = (Item)this.reflectAccessField(entry, "item", entry.getClass());
         CNode node = this.manager.getOrCreateGlobalNode(Registry.ITEM.getId(item), CNodeType.item);
-        this.manager.createGlobalSingleLink(node, lootNode, lootTable, lootNode.id, CLinkType.loot_table);
+        this.manager.createGlobalSingleLink(node, lootNode, lootTable.toString(), lootNode.id, CLinkType.loot_table);
     }
 
     void parseEmptyEntry(
@@ -82,7 +82,7 @@ public class LootParser {
                 return;
             }
             CNode node = this.manager.getOrCreateGlobalNode(name.getId(), CNodeType.tag);
-            this.manager.createGlobalSingleLink(node, lootNode, lootTable, lootNode.id, CLinkType.loot_table);
+            this.manager.createGlobalSingleLink(node, lootNode, lootTable.toString(), lootNode.id, CLinkType.loot_table);
         } catch (ClassCastException e) {
             this.logger.warn("failed to cast from tag entry's name to Tag<Item>, skipped");
         }
@@ -91,7 +91,7 @@ public class LootParser {
     void parseLootTableEntry(LootTableEntry entry, CNode lootNode, LootTable lootTable) {
         Identifier id = (Identifier)this.reflectAccessField(entry, "id", entry.getClass());
         CNode node = this.manager.getOrCreateGlobalNode(id, CNodeType.loot);
-        this.manager.createGlobalSingleLink(node, lootNode, lootTable, lootNode.id, CLinkType.loot_table);
+        this.manager.createGlobalSingleLink(node, lootNode, lootTable.toString(), lootNode.id, CLinkType.loot_table);
     }
 
     // @TODO

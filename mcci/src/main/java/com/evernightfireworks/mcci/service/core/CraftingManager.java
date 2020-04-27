@@ -1,5 +1,6 @@
 package com.evernightfireworks.mcci.service.core;
 
+import com.google.gson.Gson;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import java.util.ArrayList;
@@ -11,15 +12,16 @@ public class CraftingManager {
         this.global = new CGraph();
     }
 
+
     public CNode getOrCreateGlobalNode(Identifier id, CNodeType kind) {
         return this.global.getOrCreateNode(id, kind);
     }
 
-    public void createGlobalSingleLink(CNode outvert, CNode invert, Object crafting, Identifier craftingId, CLinkType kind) {
+    public void createGlobalSingleLink(CNode outvert, CNode invert, String crafting, Identifier craftingId, CLinkType kind) {
         this.global.createSingleLink(outvert, invert, crafting, craftingId, kind);
     }
 
-    public void createGlobalBinaryLinks(CNode nodeA, CNode nodeB, Object crafting, Identifier craftingId, CLinkType kind) {
+    public void createGlobalBinaryLinks(CNode nodeA, CNode nodeB, String crafting, Identifier craftingId, CLinkType kind) {
         this.global.createBinaryLinks(nodeA, nodeB, crafting, craftingId, kind);
     }
 

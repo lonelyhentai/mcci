@@ -12,9 +12,12 @@ import net.minecraft.tag.RegistryTagManager;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class TagParser {
     CraftingManager manager;
+    private final Logger logger = LogManager.getFormatterLogger("mcci:service:parser:tag_parser");
     public TagParser(CraftingManager manager) {
         this.manager = manager;
     }
@@ -30,7 +33,7 @@ public class TagParser {
         CNode tagNode = this.manager.getOrCreateGlobalNode(identifier, CNodeType.tag);
         for(Item v: tag.values()) {
             CNode itemNode = this.manager.getOrCreateGlobalNode(Registry.ITEM.getId(v), CNodeType.item);
-            this.manager.createGlobalBinaryLinks(tagNode, itemNode, tag, identifier, CLinkType.tag);
+            this.manager.createGlobalSingleLink(itemNode, tagNode, tag.toString(), identifier, CLinkType.tag);
         }
     }
 
@@ -38,7 +41,7 @@ public class TagParser {
         CNode tagNode = this.manager.getOrCreateGlobalNode(identifier, CNodeType.tag);
         for(Fluid v: tag.values()) {
             CNode fluidNode = this.manager.getOrCreateGlobalNode(Registry.FLUID.getId(v), CNodeType.fluid);
-            this.manager.createGlobalBinaryLinks(tagNode, fluidNode, tag, identifier, CLinkType.tag);
+            this.manager.createGlobalSingleLink(fluidNode, tagNode, tag.toString(), identifier, CLinkType.tag);
         }
     }
 
@@ -46,15 +49,15 @@ public class TagParser {
         CNode tagNode = this.manager.getOrCreateGlobalNode(identifier, CNodeType.tag);
         for(Block v: tag.values()) {
             CNode blockTag = this.manager.getOrCreateGlobalNode(Registry.BLOCK.getId(v), CNodeType.block);
-            this.manager.createGlobalBinaryLinks(tagNode, blockTag, tag, identifier, CLinkType.tag);
+            this.manager.createGlobalSingleLink(blockTag, tagNode, tag.toString(), identifier, CLinkType.tag);
         }
     }
 
     void parseEntityTypeTag(Identifier identifier, Tag<EntityType<?>> tag) {
         CNode tagNode = this.manager.getOrCreateGlobalNode(identifier, CNodeType.tag);
         for(EntityType<?> v: tag.values()) {
-            CNode blockTag = this.manager.getOrCreateGlobalNode(Registry.ENTITY_TYPE.getId(v), CNodeType.entity);
-            this.manager.createGlobalBinaryLinks(tagNode, blockTag, tag, identifier, CLinkType.tag);
+            CNode entityTag = this.manager.getOrCreateGlobalNode(Registry.ENTITY_TYPE.getId(v), CNodeType.entity);
+            this.manager.createGlobalSingleLink(entityTag, tagNode, tag.toString(), identifier, CLinkType.tag);
         }
     }
 }

@@ -1,9 +1,11 @@
 package com.evernightfireworks.mcci.service.core;
 
+import com.evernightfireworks.mcci.service.TranslationService;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-
 import java.util.ArrayList;
 
 public class CNode {
@@ -39,5 +41,29 @@ public class CNode {
         Identifier id = new Identifier(idStr);
         CNodeType kind = CNodeType.valueOf(kindStr);
         return new ImmutablePair<>(id, kind);
+    }
+
+    public String getTranslatableName() {
+        if(this.kind==CNodeType.block) {
+            return new TranslatableText(Registry.BLOCK.get(this.id).getTranslationKey()).asString();
+        } else if(this.kind==CNodeType.item) {
+            return new TranslatableText(Registry.ITEM.get(this.id).getTranslationKey()).asString();
+        } else if(this.kind==CNodeType.entity) {
+            return new TranslatableText(Registry.ENTITY_TYPE.get(this.id).getTranslationKey()).asString();
+        } else if(this.kind==CNodeType.fluid) {
+            return new TranslatableText(Registry.FLUID.get(this.id).getBucketItem().getTranslationKey()).asString();
+        } else if(this.kind==CNodeType.tag||this.kind==CNodeType.loot) {
+            return TranslationService.translate(this);
+        } else {
+            return new TranslatableText(String.format("%s.%s.%s",
+                    this.kind.toString(),
+                    this.id.getNamespace(),
+                    this.id.getPath().replace('/','.')
+                    )).asString();
+        }
+    }
+
+    public static String getTypeTranslatableName(CNodeType kind) {
+        return new TranslatableText("service.mcci.core.cnode_type." + kind.toString()).asString();
     }
 }
