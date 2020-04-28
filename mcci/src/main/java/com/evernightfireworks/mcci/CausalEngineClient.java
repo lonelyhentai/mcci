@@ -1,6 +1,6 @@
 package com.evernightfireworks.mcci;
 
-import com.evernightfireworks.mcci.block.CausalBlocks;
+import com.evernightfireworks.mcci.blocks.CausalBlocks;
 import net.fabricmc.api.ClientModInitializer;
 
 public class CausalEngineClient implements ClientModInitializer {

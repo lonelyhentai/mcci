@@ -3,16 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>Crafting-Graph</title>
-    <script src="https://cdn.bootcss.com/echarts/4.7.0/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@4.7.0/dist/echarts.min.js"
+            integrity="sha256-eKrx6Ly6b0Rscx/PSm52rJsvK76RJyv18Toswq+OLSs=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@4.7.0/theme/vintage.js"
+            integrity="sha256-35gD931itfNfz+CWIfLC00E+wjKnVwry9DwPIKU6RBQ=" crossorigin="anonymous"></script>
     <style>
         html {
             margin: 0;
             border: 0;
         }
+
         body {
             margin: 0;
             border: 0;
         }
+
         #graph {
             height: 100vh;
             width: 100vw;
@@ -23,20 +28,21 @@
 <div id="graph"></div>
 <script type="text/javascript">
     const data = {/*data*/};
+
     function debounce(fn, wait, immediate = true) {
         let timer;
-        const later = (context, args) => setTimeout(()=>{
+        const later = (context, args) => setTimeout(() => {
             timer = null;
-            if(!immediate) {
+            if (!immediate) {
                 fn.apply(context, args);
             }
         }, wait);
         const debounced = function (...params) {
             const context = this;
             const args = params;
-            if(!timer) {
+            if (!timer) {
                 timer = later(context, args);
-                if(immediate) {
+                if (immediate) {
                     fn.apply(context, args);
                 }
             } else {
@@ -44,15 +50,16 @@
                 timer = later(context, args);
             }
         }
-        debounced.cancel = function() {
+        debounced.cancel = function () {
             clearTimeout(timer);
             timer = null;
         };
         return debounced;
     }
+
     window.onload = () => {
         const element = document.querySelector("#graph");
-        const chart = echarts.init(element);
+        const chart = echarts.init(element, 'vintage');
         window.onresize = debounce(() => {
             chart.resize();
         }, 100, false);
@@ -69,13 +76,11 @@
                 formatter: (params) => {
                     let res = "";
                     const current = params.data;
-                    if(params.dataType==='node') {
+                    if (params.dataType === 'node') {
                         res = `<b>${data.categories[current.category].name}</b>@${current.name}`;
-                    }
-                    else if(params.dataType==="edge") {
+                    } else if (params.dataType === "edge") {
                         res = `<b>${data.linkCategories[current.kind].name}</b>@${data.nodes[current.source].name}>${data.nodes[current.target].name}`;
-                    }
-                    else if(params.dataType==="category") {
+                    } else if (params.dataType === "category") {
                         res = `${current.name}`;
                     }
                     return res;
@@ -96,9 +101,9 @@
                     categories: data.categories,
                     roam: false,
                     force: {
-                        edgeLength: 5,
+                        edgeLength: 8,
                         repulsion: 20,
-                        gravity: 0.2
+                        gravity: 0.3
                     },
                     edges: data.links,
                 }

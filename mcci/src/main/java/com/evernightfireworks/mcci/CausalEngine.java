@@ -1,7 +1,7 @@
 package com.evernightfireworks.mcci;
 
-import com.evernightfireworks.mcci.block.CausalBlocks;
-import com.evernightfireworks.mcci.service.CraftingPolicyService;
+import com.evernightfireworks.mcci.blocks.CausalBlocks;
+import com.evernightfireworks.mcci.services.CraftingPolicyService;
 import net.fabricmc.api.ModInitializer;
 
 
@@ -10,9 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class CausalEngine implements ModInitializer {
-
-    public static final Identifier ID = new Identifier("mcci","causal_engine");
-    private static final Logger logger = LogManager.getFormatterLogger("MCCI");
+    private static final Logger logger = LogManager.getFormatterLogger(CausalEngine.class.getName());
     public static CraftingPolicyService CRAFTING_POLICY_SERVICE;
 
     @Override
