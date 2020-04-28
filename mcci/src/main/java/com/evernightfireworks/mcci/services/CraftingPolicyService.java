@@ -1,5 +1,6 @@
 package com.evernightfireworks.mcci.services;
 
+import com.evernightfireworks.mcci.services.managers.CraftingManager;
 import com.evernightfireworks.mcci.services.core.CGraph;
 import com.evernightfireworks.mcci.services.interfaces.CGraphContainer;
 import com.evernightfireworks.mcci.services.parsers.LootParser;
@@ -9,7 +10,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
 import net.minecraft.loot.LootManager;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.tag.RegistryTagManager;

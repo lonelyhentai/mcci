@@ -1,5 +1,6 @@
 package com.evernightfireworks.mcci.services;
 
+import com.evernightfireworks.mcci.services.managers.CraftingManager;
 import com.evernightfireworks.mcci.services.core.CNode;
 import net.minecraft.text.TranslatableText;
 

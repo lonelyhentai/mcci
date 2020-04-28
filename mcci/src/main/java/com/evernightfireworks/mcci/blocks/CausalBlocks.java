@@ -3,7 +3,6 @@ package com.evernightfireworks.mcci.blocks;
 import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.minecraft.block.Material;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -22,10 +21,10 @@ public class CausalBlocks {
             FabricItemGroupBuilder.create(new Identifier("mcci", "general"))
                     .icon(() -> new ItemStack(CausalMachineBlock.ITEM))
                     .appendItems((it) -> {
-                        List<BlockItem> items = Arrays.asList(
+                        List<Item> items = Arrays.asList(
                                 CausalMachineBlock.ITEM,
                                 CraftingPolicyMachineBlock.ITEM,
-                                DemandPolicyMachineBlock.ITEM
+                                DemandPolicyMachineItem.ITEM
                         );
                         List<ItemStack> mapped = items.stream().map(ItemStack::new).collect(Collectors.toList());
                         it.addAll(mapped);
@@ -35,7 +34,7 @@ public class CausalBlocks {
     public static void registerMain() {
         CausalMachineBlock.registerMain();
         CraftingPolicyMachineBlock.registerMain();
-        DemandPolicyMachineBlock.registerMain();
+        DemandPolicyMachineItem.registerMain();
     }
 
     public static void registerClient() {

@@ -1,3 +1,6 @@
 {
-  "parent": "mcci:block/demand_policy_machine"
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "mcci:item/demand_policy_machine"
+  }
 }

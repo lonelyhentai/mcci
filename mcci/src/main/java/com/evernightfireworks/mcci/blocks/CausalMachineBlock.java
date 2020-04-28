@@ -1,5 +1,6 @@
 package com.evernightfireworks.mcci.blocks;
 
+import com.evernightfireworks.mcci.services.DemandPoliceService;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -34,6 +35,10 @@ public class CausalMachineBlock extends Block {
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         logger.info("on used");
+        if(world.isClient()) {
+            var d = new DemandPoliceService();
+            d.calculateHungerFactor(player);
+        }
         return ActionResult.SUCCESS;
     }
 }

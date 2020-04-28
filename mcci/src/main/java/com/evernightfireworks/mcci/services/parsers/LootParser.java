@@ -3,7 +3,7 @@ package com.evernightfireworks.mcci.services.parsers;
 import com.evernightfireworks.mcci.services.core.CLinkType;
 import com.evernightfireworks.mcci.services.core.CNode;
 import com.evernightfireworks.mcci.services.core.CNodeType;
-import com.evernightfireworks.mcci.services.CraftingManager;
+import com.evernightfireworks.mcci.services.managers.CraftingManager;
 import net.minecraft.item.Item;
 import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootPool;

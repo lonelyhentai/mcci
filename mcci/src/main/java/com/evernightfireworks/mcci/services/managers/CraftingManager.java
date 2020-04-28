@@ -1,4 +1,4 @@
-package com.evernightfireworks.mcci.services;
+package com.evernightfireworks.mcci.services.managers;
 
 import com.evernightfireworks.mcci.services.core.CGraph;
 import com.evernightfireworks.mcci.services.core.CLinkType;
@@ -11,7 +11,6 @@ import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class CraftingManager {
