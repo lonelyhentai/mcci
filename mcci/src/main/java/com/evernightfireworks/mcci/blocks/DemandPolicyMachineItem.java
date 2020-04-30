@@ -17,6 +17,4 @@ public class DemandPolicyMachineItem extends ToolItem {
     public static void registerMain() {
         Registry.register(Registry.ITEM, ID, ITEM);
     }
-
-
 }

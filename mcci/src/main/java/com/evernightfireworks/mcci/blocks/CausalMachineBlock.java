@@ -5,6 +5,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -34,10 +35,13 @@ public class CausalMachineBlock extends Block {
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        logger.info("on used");
         if(world.isClient()) {
-            var d = new DemandPoliceService();
-            d.calculateHungerFactor(player);
+            logger.info("on used");
+            DemandPoliceService.calculateHungerFactor(player);
+            DemandPoliceService.calculateSafetyFactor(player);
+            DemandPoliceService.calculateProductionFactor(player);
+        } else {
+            DemandPoliceService.calculateDevelopmentFactor((ServerPlayerEntity)player);
         }
         return ActionResult.SUCCESS;
     }
