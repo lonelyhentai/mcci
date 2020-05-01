@@ -55,10 +55,9 @@ public class CraftingPolicyMachineBlock extends Block implements BlockEntityProv
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if(!world.isClient) {
-            ContainerProviderRegistry.INSTANCE.openContainer(ID, player, (packetByteBuf -> packetByteBuf.writeBlockPos(pos)));
-        } else {
+        if(!world.isClient()) {
             logger.info("on block used");
+            ContainerProviderRegistry.INSTANCE.openContainer(ID, player, (packetByteBuf -> packetByteBuf.writeBlockPos(pos)));
         }
         return ActionResult.SUCCESS;
     }

@@ -148,7 +148,9 @@ public class ShadowHungerManager {
             this.foodLevel -= 1;
             t += 1;
         }
-        this.logger.info(String.format("hunger factor of this run is %d", t));
-        return t;
+        t = Math.min(200, t);
+        int factor = (int)Math.ceil(Math.sqrt(((double) t / 2))) * 10;
+        this.logger.info(String.format("hunger factor is %d", factor));
+        return factor;
     }
 }
