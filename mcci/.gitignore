@@ -149,6 +149,5 @@ hs_err_pid*
 
 run/
 minecraft/
-lib/*-natives/*
 !lib/WebView.jar
 !**/.gitkeep
