@@ -22,22 +22,19 @@ repositories {
         name = 'Fabric'
         url = "http://maven.fabricmc.net/"
     }
-    flatDir {
-        dirs 'lib'
-    }
     mavenCentral()
 }
 
 dependencies {
     //to change the versions see the gradle.properties file
-    compile group: 'black.ninia', name: 'jep', version: project.jep_version
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     modImplementation "io.github.cottonmc:LibGui:${project.libgui_version}"
-    implementation name: "Webview"
+    compile files("lib/Webview.jar")
+    compile files("../libmcci/libmcci-env/Lib/site-packages/jep/jep-${project.jep_version}.jar")
 }
 
 processResources {
@@ -58,6 +55,14 @@ processResources {
 // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
+}
+
+tasks.withType(JavaExec) {
+    environment('PYTHONHOME', "../../libmcci/libmcci-env")
+    environment('PATH',
+            "../../libmcci/libmcci-env" + System.getProperty("path.separator")
+                    + "../../libmcci/libmcci-env/Scripts" + System.getProperty("path.separator")
+                    + "$System.env.PATH")
 }
 
 // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
