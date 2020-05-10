@@ -1,14 +1,10 @@
 package com.evernightfireworks.mcci.services;
 
 import com.evernightfireworks.mcci.CausalEngine;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 
 public class FileSystemManager {
     public static InputStream getSourceResourceAsStream(String path) {
@@ -19,13 +15,11 @@ public class FileSystemManager {
         return Paths.get(MinecraftClient.getInstance().getResourcePackDir().getAbsolutePath(), path);
     }
 
-    @Environment(EnvType.CLIENT)
     public static InputStream getRuntimeResourceAsStream(String path) throws IOException {
         Path absPath = getRuntimeResourceAbsPath(path);
         return new FileInputStream(absPath.toFile());
     }
 
-    @Environment(EnvType.CLIENT)
     public static void writeRuntimeResource(String path, String content) throws IOException {
         Path absPath = getRuntimeResourceAbsPath(path);
         File file = ensureAndWriteFile(absPath);
@@ -45,4 +39,14 @@ public class FileSystemManager {
         Files.createFile(absPath);
         return absPath.toFile();
     }
+
+    public static void ensureDir(Path absDir) throws IOException {
+        if(!Files.exists(absDir)) {
+            Files.createDirectory(absDir);
+        } else if(!Files.isDirectory(absDir)) {
+            throw new IOException(String.format("'%s' exists but is not a directory", absDir.toString()));
+        }
+    }
+
+
 }

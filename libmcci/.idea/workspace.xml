@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="52833e56-00a2-443c-aa95-039ec75fefbb" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/setup.bat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/setup.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../mcci/src/main/java/com/evernightfireworks/mcci/commands/CausalCommands.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../mcci/src/main/java/com/evernightfireworks/mcci/services/CausalService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libmcci.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libmcci.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mcci/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../mcci/.idea/jarRepositories.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mcci/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/../mcci/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mcci/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../mcci/gradle.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mcci/src/main/java/com/evernightfireworks/mcci/CausalEngine.java" beforeDir="false" afterPath="$PROJECT_DIR$/../mcci/src/main/java/com/evernightfireworks/mcci/CausalEngine.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mcci/src/main/java/com/evernightfireworks/mcci/blocks/CausalBlocks.java" beforeDir="false" afterPath="$PROJECT_DIR$/../mcci/src/main/java/com/evernightfireworks/mcci/blocks/CausalBlocks.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mcci/src/main/java/com/evernightfireworks/mcci/blocks/CausalMachineBlock.java" beforeDir="false" afterPath="$PROJECT_DIR$/../mcci/src/main/java/com/evernightfireworks/mcci/blocks/CausalMachineBlock.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mcci/src/main/java/com/evernightfireworks/mcci/gui/controllers/CraftingPolicyMachineController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mcci/src/main/java/com/evernightfireworks/mcci/services/CraftingPolicyService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../mcci/src/main/java/com/evernightfireworks/mcci/services/CraftingPolicyService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mcci/src/main/java/com/evernightfireworks/mcci/services/FileSystemManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/../mcci/src/main/java/com/evernightfireworks/mcci/services/ResourceSystemManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mcci/src/main/java/com/evernightfireworks/mcci/services/TranslationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../mcci/src/main/java/com/evernightfireworks/mcci/services/TranslationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mcci/src/main/resources/assets/mcci/lang/en_us.json" beforeDir="false" afterPath="$PROJECT_DIR$/../mcci/src/main/resources/assets/mcci/lang/en_us.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mcci/src/main/resources/assets/mcci/lang/zh_cn.json" beforeDir="false" afterPath="$PROJECT_DIR$/../mcci/src/main/resources/assets/mcci/lang/zh_cn.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mcci/src/main/resources/fabric.mod.json" beforeDir="false" afterPath="$PROJECT_DIR$/../mcci/src/main/resources/fabric.mod.json" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1cJUhlKLboi5GgtNcGAvjHHVQW3" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+  </component>
+  <component name="RunManager">
+    <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="libmcci" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.test" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="52833e56-00a2-443c-aa95-039ec75fefbb" name="Default Changelist" comment="" />
+      <created>1590246311316</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1590246311316</updated>
+      <workItem from="1590246330312" duration="1394000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="1183" y="313" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1590246554337">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="1183" y="313" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1590246554337" />
+    <state x="937" y="168" key="SettingsEditor" timestamp="1590246640894">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="937" y="168" key="SettingsEditor/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1590246640894" />
+  </component>
+</project>

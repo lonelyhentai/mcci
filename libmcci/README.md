@@ -1,33 +1,45 @@
 # LIBMCCI
 
-## Create new python env and activate
+## Install with script
 
-Create your virtual env, and activate your env and install wheel, numpy.
+For windows:
 
-```bash
-python -m venv libmcci-env
-# for *nix
-source libmcci-env/Scripts/activate
-# for windows cmd (please do not use powershell, because you should activate vcvars64.bat)
-libmcci-env/Scripts/activate.bat
+```bat
+.\setup.bat
 ```
 
-## Install jep and dowhy
+For *nix:
 
-First install build tools, for using `numpy` with `jep`, please install it
-
-```bash
-pip install wheel numpy
+```shell
+./setup.sh
 ```
 
-Install the `jep` and `dowhy`:
+## Manually installation
 
-- If you are using windows, please ensure you have `visual studio build tools` and `windows SDK` 
-of required version of python installed. And you should have `vcvars64.bat` script in your path,
-then using `cmd` rather than `powershell`.
-- And for *nix, ensure you have gcc or clang installed.
+### Create new python env and activate
+
+Create your conda env, and activate your env and install wheel, numpy.
 
 ```bash
-vcvars64.bat # just for windows
-pip install jep dowhy
+conda create --prefix ./libmcci-env python=3.6 --copy
+conda activate ./libmcci-env
 ```
+
+### Install dowhy and graphviz
+
+Install the `juypter` and `dowhy`:
+
+```bash
+pip install wheel numpy tensorflow==1.* # if use cuda, please install gpu-version
+python -m ipykernel install --name mcci
+pip install dowhy
+```
+
+Install `graphviz` and `pygraphviz` by conda and init dot:
+
+```bash
+conda install -c alubbock graphviz pygraphviz
+libmcci-env/Scripts/dot -c
+```
+
+
