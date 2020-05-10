@@ -89,7 +89,7 @@ public class CraftingPolicyService {
 
     @Environment(EnvType.CLIENT)
     public static URL getWebViewGraphURL() throws MalformedURLException {
-        return FileSystemManager.getRuntimeResourceAbsPath(WEBVIEW_PATH).toUri().toURL();
+        return ResourceSystemManager.getRuntimeResourceAbsPath(WEBVIEW_PATH).toUri().toURL();
     }
 
     @Environment(EnvType.CLIENT)
@@ -100,10 +100,10 @@ public class CraftingPolicyService {
             container.setCGraph(this.getSubCraftingGraph(world, item));
             String serializedGraph = serializeSubgraph(container.getCGraph());
             try {
-                var templateStream = FileSystemManager.getSourceResourceAsStream(WEBVIEW_PATH);
+                var templateStream = ResourceSystemManager.getSourceResourceAsStream(WEBVIEW_PATH);
                 String content = new String(templateStream.readAllBytes(), StandardCharsets.UTF_8);
                 String output = content.replaceAll("\\{/\\*data\\*/}", serializedGraph);
-                FileSystemManager.writeRuntimeResource(WEBVIEW_PATH, output);
+                ResourceSystemManager.writeRuntimeResource(WEBVIEW_PATH, output);
                 this.logger.info(String.format("succeed to write serialized graph to %s", WEBVIEW_PATH));
             } catch (Exception e) {
                 this.logger.error( String.format("failed to load resource of %s", WEBVIEW_PATH), e);

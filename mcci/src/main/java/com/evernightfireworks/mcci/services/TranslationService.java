@@ -12,7 +12,7 @@ public class TranslationService {
         String content = String.format("[%s]",manager.global.nodes.values().stream()
                 .map(n->String.format("\"%s\"", n.toKey()))
                 .collect(Collectors.joining(",")));
-        FileSystemManager.writeRuntimeResource("temp/nodes.json", content);
+        ResourceSystemManager.writeRuntimeResource("temp/nodes.json", content);
     }
 
     public static String translate(CNode node) {

@@ -1,5 +1,6 @@
 import jep.JepException;
 import jep.Interpreter;
+import jep.MainInterpreter;
 import jep.SharedInterpreter;
 
 public class JEPTest {

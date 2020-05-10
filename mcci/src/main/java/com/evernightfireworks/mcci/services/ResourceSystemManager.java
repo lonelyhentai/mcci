@@ -6,7 +6,7 @@ import net.minecraft.client.MinecraftClient;
 import java.io.*;
 import java.nio.file.*;
 
-public class FileSystemManager {
+public class ResourceSystemManager {
     public static InputStream getSourceResourceAsStream(String path) {
         return CausalEngine.class.getResourceAsStream("/assets/mcci/"+ path);
     }

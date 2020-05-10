@@ -19,6 +19,9 @@
     ],
     "client": [
       "com.evernightfireworks.mcci.CausalEngineClient"
+    ],
+    "cotton-client-commands": [
+      "com.evernightfireworks.mcci.commands.CausalCommands"
     ]
   },
   "mixins": [
@@ -27,7 +30,8 @@
   "depends": {
     "fabricloader": ">=0.7.1",
     "fabric": "*",
-    "minecraft": "1.15.x"
+    "minecraft": "1.15.x",
+    "cotton-client-commands": "^1.0.0"
   },
   "suggests": {
     "flamingo": "*"
