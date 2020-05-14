@@ -4,6 +4,7 @@ package com.evernightfireworks.mcci.gui.controllers;
 import ca.weblite.webview.WebView;
 import com.evernightfireworks.mcci.CausalEngine;
 import com.evernightfireworks.mcci.services.CraftingPolicyService;
+import com.evernightfireworks.mcci.services.WebViewService;
 import com.evernightfireworks.mcci.services.core.CGraph;
 import com.evernightfireworks.mcci.services.interfaces.CGraphContainer;
 import io.github.cottonmc.cotton.gui.CottonCraftingController;
@@ -37,7 +38,7 @@ public class CraftingPolicyMachineController extends CottonCraftingController {
         root.add(title, 14, 3, 4, 2);
 
         WItemSlot itemSlot = WItemSlot.of(blockInventory, 0);
-        root.add(itemSlot, 18, 2, 2, 2);
+        root.add(itemSlot, 18, 6, 2, 2);
 
         WButton generateButton = new WButton(new TranslatableText("gui.mcci.crafting_policy_machine.generation_button"));
         generateButton.setOnClick(() -> {
@@ -45,21 +46,15 @@ public class CraftingPolicyMachineController extends CottonCraftingController {
                 this.logger.info("clicked generation button");
                 if(!this.blockInventory.isInvEmpty()) {
                     try {
-                        URL url = CraftingPolicyService.getWebViewGraphURL();
-                        new Thread(() -> {
-                            WebView webview = new WebView();
-                            webview.url(url.toString());
-                            webview.title("Crafting Graph");
-                            webview.resizable(true);
-                            webview.show();
-                        }).start();
-                    } catch (MalformedURLException e) {
+                        String uri = CraftingPolicyService.WEBVIEW_PATH;
+                        WebViewService.viewResource(uri, "Crafting Graph", true);
+                    } catch (Exception e) {
                         this.logger.error("failed to open webview", e);
                     }
                 }
             }
         });
-        root.add(generateButton, 14, 6, 7, 2);
+        root.add(generateButton, 13, 6, 4, 2);
         root.add(this.createPlayerInventoryPanel(), 1, 10);
         root.validate(this);
     }

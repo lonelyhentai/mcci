@@ -161,14 +161,7 @@ public class CausalService {
             throw new IOException("session '" + sessionName + "' state error");
         }
         String url = getJupyterURL(sessionName, fileName);
-        new Thread(() -> {
-            WebView webview = new WebView();
-            webview.url(url);
-            webview.size(1280, 720);
-            webview.title(String.format("editing '%s' of session '%s'", fileName, sessionName));
-            webview.resizable(true);
-            webview.show();
-        }).start();
+        WebViewService.view(url, String.format("editing '%s' of session '%s'", fileName, sessionName), true, 1280, 720);
     }
 
     public static void viewRoot() {
@@ -176,14 +169,7 @@ public class CausalService {
         if (url.isEmpty()) {
             return;
         }
-        new Thread(() -> {
-            WebView webview = new WebView();
-            webview.url(url);
-            webview.size(1280, 720);
-            webview.title("Causal Analysis");
-            webview.resizable(true);
-            webview.show();
-        }).start();
+        WebViewService.view(url, "Causal Analysis", true, 1280, 720);
     }
 
     public static void appendRecord(String sessionName, String record) throws IOException {

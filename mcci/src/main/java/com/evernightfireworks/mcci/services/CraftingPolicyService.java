@@ -25,7 +25,7 @@ import java.util.HashSet;
 
 public class CraftingPolicyService {
     public static HashSet<LootManager> lootManagers = new HashSet<>();
-    private static final String WEBVIEW_PATH = "webview/crafting-graph.html";
+    public static final String WEBVIEW_PATH = "webview/crafting-graph.html";
 
     public static void registerMain() {
         LootTableLoadingCallback.EVENT.register((
@@ -87,12 +87,6 @@ public class CraftingPolicyService {
         return subgraph.serialize((g, n)->5+(int)Math.pow(1.6, g.maxPriority-g.getPriority(n)));
     }
 
-    @Environment(EnvType.CLIENT)
-    public static URL getWebViewGraphURL() throws MalformedURLException {
-        return ResourceSystemManager.getRuntimeResourceAbsPath(WEBVIEW_PATH).toUri().toURL();
-    }
-
-    @Environment(EnvType.CLIENT)
     public void refreshWebViewGraph(CGraphContainer container, Item item, World world) {
         this.logger.info(String.format("try to update sub graph of '%s'...",Registry.ITEM.getId(item).toString()));
         if (container.getCGraph().shouldUpdate(item)) {

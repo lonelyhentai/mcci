@@ -47,6 +47,4 @@ public class ResourceSystemManager {
             throw new IOException(String.format("'%s' exists but is not a directory", absDir.toString()));
         }
     }
-
-
 }

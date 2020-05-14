@@ -1,6 +1,7 @@
 package com.evernightfireworks.mcci.blocks;
 
 import com.evernightfireworks.mcci.services.CausalService;
+import com.evernightfireworks.mcci.services.WebViewService;
 import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.minecraft.block.Material;
@@ -41,5 +42,6 @@ public class CausalBlocks {
     public static void registerClient() {
         CraftingPolicyMachineBlock.registerClient();
         CausalService.initJupyterServer();
+        WebViewService.registerClient();
     }
 }
