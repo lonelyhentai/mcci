@@ -1,8 +1,10 @@
 package com.evernightfireworks.mcci.commands;
 
 import com.evernightfireworks.mcci.services.CausalService;
+import com.evernightfireworks.mcci.services.WebViewService;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import guru.nidi.graphviz.parse.ParserException;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.ClientCommandPlugin;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
@@ -35,7 +37,6 @@ public class CausalCommands implements ClientCommandPlugin {
                                                             String sessionName = StringArgumentType.getString(ctx, "session");
                                                             try {
                                                                 CausalService.createSession(sessionName);
-                                                                CausalService.viewPage(sessionName, CausalService.CausalPageType.GRAPH);
                                                                 this.currentSessionName = sessionName;
                                                                 ctx.getSource().sendFeedback(new LiteralText(
                                                                         "Succeed to create '" + sessionName + "'"
@@ -110,80 +111,153 @@ public class CausalCommands implements ClientCommandPlugin {
                                         )
                         )
                         .then(
-                                ArgumentBuilders.literal("format")
-                                        .executes(ctx -> {
-                                            try {
-                                                Pair<String,String> pair = CausalService.getRecordHeader(this.currentSessionName);
-                                                ctx.getSource().sendFeedback(new LiteralText(
-                                                        "common variables: " + pair.getLeft() + "\nunobserved cofounders: " + pair.getRight() + ""
-                                                ));
-                                                return 1;
-                                            } catch (Exception e) {
-                                                ctx.getSource().sendError(new LiteralText(
-                                                        "failed to show record format: "
-                                                                + e.getClass().getName() + ","
-                                                                + e.getLocalizedMessage()
-                                                ));
-                                                return -1;
-                                            }
-                                        })
+                                ArgumentBuilders.literal("list")
+                                    .executes(ctx->{
+                                       try {
+                                           String joinedSessions =  CausalService.listSessions();
+                                           ctx.getSource().sendFeedback(new LiteralText(
+                                                   "all sessions:\n" + joinedSessions
+                                           ));
+                                           return 1;
+                                       } catch(IOException e) {
+                                           ctx.getSource().sendError(new LiteralText(
+                                                   "Failed to list session of '" + this.currentSessionName + "'" + e.getClass().getName()
+                                                           + ", " + e.getLocalizedMessage()
+                                           ));
+                                           return -1;
+                                       }
+                                    })
                         )
                         .then(
                                 ArgumentBuilders.literal("graph")
-                                        .executes(ctx -> {
-                                            try {
-                                                CausalService.viewPage(this.currentSessionName, CausalService.CausalPageType.GRAPH);
-                                                ctx.getSource().sendFeedback(new LiteralText(
-                                                        "Succeed to edit graph of '" + this.currentSessionName + "'"
-                                                ));
-                                                return 1;
-                                            } catch (IOException e) {
-                                                ctx.getSource().sendError(new LiteralText(
-                                                        e.getLocalizedMessage()
-                                                ));
-                                                return -1;
-                                            }
-                                        })
-                        )
-                        .then(
-                                ArgumentBuilders.literal("log")
                                         .then(
-                                                ArgumentBuilders.argument("record", string())
+                                                ArgumentBuilders.literal("edit")
                                                         .executes(ctx -> {
-                                                            String record = StringArgumentType.getString(ctx, "record");
                                                             try {
-                                                                CausalService.appendRecord(this.currentSessionName, record);
+                                                                CausalService.viewPage(this.currentSessionName, CausalService.CausalPageType.DOT);
                                                                 ctx.getSource().sendFeedback(new LiteralText(
-                                                                        "Succeed to log new record of '" + this.currentSessionName + "'"
+                                                                        "Succeed to edit graph of '" + this.currentSessionName + "'"
                                                                 ));
                                                                 return 1;
                                                             } catch (IOException e) {
                                                                 ctx.getSource().sendError(new LiteralText(
-                                                                        "failed to append new record: " + e.getClass().getName()
+                                                                        "failed to open graph file of session '" + this.currentSessionName + "': " + e.getClass().getName()
                                                                                 + ", " + e.getLocalizedMessage()
                                                                 ));
                                                                 return -1;
                                                             }
                                                         })
                                         )
+                                        .then(
+                                                ArgumentBuilders.literal("show")
+                                                        .executes(ctx -> {
+                                                            try {
+                                                                CausalService.generateGraph(this.currentSessionName);
+                                                                WebViewService.view(
+                                                                        CausalService.getJupyterURL(this.currentSessionName, CausalService.CausalPageType.IMAGE),
+                                                                        "graph of '" + this.currentSessionName +"'", true
+                                                                );
+                                                                ctx.getSource().sendFeedback(new LiteralText(
+                                                                        "Succeed to show graph of '" + this.currentSessionName + "'"
+                                                                ));
+                                                                return 1;
+                                                            } catch (ParserException e) {
+                                                                ctx.getSource().sendError(new LiteralText(
+                                                                        "Failed to parser graph of '" + this.currentSessionName + "'" + e.getClass().getName()
+                                                                                + ", " + e.getLocalizedMessage()
+                                                                ));
+                                                                return -1;
+                                                            } catch (IOException e) {
+                                                                ctx.getSource().sendError(new LiteralText(
+                                                                        "failed to open graph image of '" + this.currentSessionName + "': " + e.getClass().getName()
+                                                                                + ", " + e.getLocalizedMessage()
+                                                                ));
+                                                                return -1;
+                                                            }
+                                                        })
+                                        )
+
                         )
                         .then(
                                 ArgumentBuilders.literal("data")
-                                        .executes(ctx -> {
-                                            try {
-                                                CausalService.viewPage(this.currentSessionName, CausalService.CausalPageType.DATA);
-                                                ctx.getSource().sendFeedback(new LiteralText(
-                                                        "Succeed to edit data of '" + this.currentSessionName + "'"
-                                                ));
-                                                return 1;
-                                            } catch (IOException e) {
-                                                ctx.getSource().sendError(new LiteralText(
-                                                        e.getLocalizedMessage()
-                                                ));
-                                                return -1;
-                                            }
-                                        })
+                                        .then(
+                                                ArgumentBuilders.literal("edit")
+                                                        .executes(ctx -> {
+                                                            try {
+                                                                CausalService.viewPage(this.currentSessionName, CausalService.CausalPageType.DATA);
+                                                                ctx.getSource().sendFeedback(new LiteralText(
+                                                                        "Succeed to edit data of '" + this.currentSessionName + "'"
+                                                                ));
+                                                                return 1;
+                                                            } catch (IOException e) {
+                                                                ctx.getSource().sendError(new LiteralText(
+                                                                        "failed to open data file of '" + this.currentSessionName + "': " + e.getClass().getName()
+                                                                                + ", " + e.getLocalizedMessage()
+                                                                ));
+                                                                return -1;
+                                                            }
+                                                        })
+                                        )
+                                        .then(
+                                                ArgumentBuilders.literal("format")
+                                                        .executes(ctx -> {
+                                                            try {
+                                                                Pair<String, String> pair = CausalService.getRecordHeader(this.currentSessionName);
+                                                                ctx.getSource().sendFeedback(new LiteralText(
+                                                                        "common variables: " + pair.getLeft() + "\nunobserved cofounders: " + pair.getRight() + ""
+                                                                ));
+                                                                return 1;
+                                                            } catch (Exception e) {
+                                                                ctx.getSource().sendError(new LiteralText(
+                                                                        "failed to show record format of '" + this.currentSessionName + "': "
+                                                                                + e.getClass().getName() + ","
+                                                                                + e.getLocalizedMessage()
+                                                                ));
+                                                                return -1;
+                                                            }
+                                                        })
+                                        )
+                                        .then(
+                                                ArgumentBuilders.literal("log")
+                                                        .then(
+                                                                ArgumentBuilders.argument("record", string())
+                                                                        .executes(ctx -> {
+                                                                            String record = StringArgumentType.getString(ctx, "record");
+                                                                            try {
+                                                                                CausalService.appendRecord(this.currentSessionName, record);
+                                                                                ctx.getSource().sendFeedback(new LiteralText(
+                                                                                        "Succeed to log new record of '" + this.currentSessionName + "'"
+                                                                                ));
+                                                                                return 1;
+                                                                            } catch (IOException e) {
+                                                                                ctx.getSource().sendError(new LiteralText(
+                                                                                        "failed to append new record of '" + this.currentSessionName + "': " + e.getClass().getName()
+                                                                                                + ", " + e.getLocalizedMessage()
+                                                                                ));
+                                                                                return -1;
+                                                                            }
+                                                                        })
+                                                        )
+                                        )
                         )
+                .then(
+                        ArgumentBuilders.literal("analyse")
+                        .executes(ctx->{
+                            try {
+                                CausalService.viewPage(this.currentSessionName, CausalService.CausalPageType.ANALYSIS);
+                                ctx.getSource().sendFeedback(new LiteralText(
+                                        "Succeed to open analysis lab of '" + this.currentSessionName + "'"
+                                ));
+                                return 1;
+                            } catch (IOException e) {
+                                ctx.getSource().sendError(new LiteralText(
+                                        "failed to open analysis lab of '" + this.currentSessionName + "': " + e.getClass().getName()
+                                                + ", " + e.getLocalizedMessage()
+                                ));
+                                return -1;
+                            }
+                        })
+                )
 
         );
     }

@@ -27,32 +27,30 @@ public class WebViewService {
         return ("http://127.0.0.1:" + PORT + (path.startsWith("/")?"":"/")+path);
     }
 
-    public static WebView viewResource(String uri, String title, boolean resize, int width, int height) {
+    public static void viewResource(String uri, String title, boolean resize, int width, int height) {
         String url =  getResourceURI(uri);
-        return view(url, title, resize, width, height);
+        view(url, title, resize, width, height);
     }
 
-    public static WebView viewResource(String uri, String title, boolean resize) {
+    public static void viewResource(String uri, String title, boolean resize) {
         String url =  getResourceURI(uri);
-        return view(url, title, resize);
+        view(url, title, resize);
     }
 
-    public static WebView view(String url, String title, boolean resize, int width, int height) {
-        WebView webview = new WebView();
-        webview.url(url);
-        webview.title(title);
-        webview.resizable(resize);
-        webview.size(width, height);
-        webview.show();
-        return webview;
+    public static void view(String url, String title, boolean resize, int width, int height) {
+            WebView webview = new WebView();
+            webview.url(url);
+            webview.title(title);
+            webview.resizable(resize);
+            webview.size(width, height);
+            webview.show();
     }
 
-    public static WebView view(String url, String title, boolean resize) {
-        WebView webview = new WebView();
-        webview.url(url);
-        webview.title(title);
-        webview.resizable(resize);
-        webview.show();
-        return webview;
+    public static void view(String url, String title, boolean resize) {
+            WebView webview = new WebView();
+            webview.url(url);
+            webview.title(title);
+            webview.resizable(resize);
+            webview.show();
     }
 }
