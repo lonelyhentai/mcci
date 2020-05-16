@@ -4,11 +4,16 @@ import com.evernightfireworks.mcci.CausalEngine;
 import net.minecraft.client.MinecraftClient;
 
 import java.io.*;
+import java.net.URISyntaxException;
 import java.nio.file.*;
 
 public class ResourceSystemManager {
     public static InputStream getSourceResourceAsStream(String path) {
         return CausalEngine.class.getResourceAsStream("/assets/mcci/"+ path);
+    }
+
+    public static File getSourceResourceFile(String path) throws URISyntaxException {
+        return new File(CausalEngine.class.getResource("/assets/mcci/"+ path).toURI());
     }
 
     public static Path getRuntimeResourceAbsPath(String path) {

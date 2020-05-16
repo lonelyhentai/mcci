@@ -38,12 +38,12 @@ public class WebViewService {
     }
 
     public static void view(String url, String title, boolean resize, int width, int height) {
-            WebView webview = new WebView();
-            webview.url(url);
-            webview.title(title);
-            webview.resizable(resize);
-            webview.size(width, height);
-            webview.show();
+        WebView webview = new WebView();
+        webview.url(url);
+        webview.title(title);
+        webview.resizable(resize);
+        webview.size(width, height);
+        webview.show();
     }
 
     public static void view(String url, String title, boolean resize) {

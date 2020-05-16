@@ -1,6 +1,6 @@
 package com.evernightfireworks.mcci.services;
 
-import com.google.common.collect.Lists;
+import com.eclipsesource.v8.*;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.model.MutableGraph;
@@ -8,13 +8,14 @@ import guru.nidi.graphviz.parse.Parser;
 import guru.nidi.graphviz.parse.ParserException;
 import joptsimple.internal.Strings;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,6 +30,14 @@ public class CausalService {
         DATA,
         ANALYSIS,
         IMAGE,
+        IDENTIFY,
+        INSTRUMENT
+    }
+
+    public static enum GraphPropertyType {
+        EXPOSURE,
+        OUTCOME,
+        LATENT,
     }
 
     private static final String PYTHON_ENV_PREFIX =
@@ -46,7 +55,9 @@ public class CausalService {
     private static final String DATA_NAME = "data.csv";
     private static final String SCRIPT_NAME = "analysis.ipynb";
     private static final String IMAGE_NAME = "graph.png";
-    private static final String DOT_TEMPLATE = "digraph %s {\n}";
+    private static final String IDENTIFY_NAME = "identify.json";
+    private static final String INSTRUMENT_NAME = "instrument.json";
+    private static final String DOT_TEMPLATE = "digraph %s { %s \n}";
     private static final String SCRIPT_TEMPLATE = "{\n" +
             " \"cells\": [\n" +
             "  {\n" +
@@ -85,8 +96,7 @@ public class CausalService {
             pb.command("resourcepacks/libmcci/Scripts/jupyter",
                     "lab", "--port=" + port, "--no-browser",
                     "--NotebookApp.token=''",
-                    "--notebook-dir='resourcepacks/mcci'",
-                    "--ExecutePreprocessor.kernel_name='mcci'")
+                    "--notebook-dir='resourcepacks/mcci'")
                     .redirectError(ProcessBuilder.Redirect.INHERIT)
                     .redirectOutput(ProcessBuilder.Redirect.INHERIT);
             Process process = pb.start();
@@ -163,7 +173,7 @@ public class CausalService {
         Path scriptPath = Path.of(absDir.toString(), SCRIPT_NAME);
         Files.createFile(dotPath);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(dotPath.toFile()))) {
-            writer.write(String.format(DOT_TEMPLATE, sessionName));
+            writer.write(String.format(DOT_TEMPLATE, sessionName, ""));
         }
         Files.createFile(Path.of(absDir.toString(), DATA_NAME));
         Files.createFile(scriptPath);
@@ -188,6 +198,10 @@ public class CausalService {
             return SCRIPT_NAME;
         } else if (kind == CausalPageType.DATA) {
             return DATA_NAME;
+        } else if(kind==CausalPageType.IDENTIFY) {
+            return IDENTIFY_NAME;
+        } else if(kind==CausalPageType.INSTRUMENT) {
+            return INSTRUMENT_NAME;
         } else {
             return IMAGE_NAME;
         }
@@ -225,24 +239,30 @@ public class CausalService {
         Files.write(path, (record + "\n").getBytes(), StandardOpenOption.APPEND);
     }
 
-    public static Pair<String, String> getRecordHeader(String sessionName) throws IOException {
+    public static List<String> getRecordFormat(String sessionName) throws IOException {
         try (InputStream is = ResourceSystemManager.getRuntimeResourceAsStream("mcci/" + sessionName + "/" + DOT_NAME)) {
             MutableGraph g = new Parser().read(is);
-            String main = g.nodes().stream().filter(n -> {
-                Object o = n.attrs().get("label");
-                if (o == null) {
-                    return true;
+            String source = "";
+            String target = "";
+            ArrayList<String> unobserveds = new ArrayList<>();
+            ArrayList<String> observeds = new ArrayList<>();
+            for(var n: g.nodes()) {
+                Object o = n.attrs().get(GraphPropertyType.LATENT.toString().toLowerCase());
+                if(o != null) {
+                    unobserveds.add(n.name().toString());
+                } else {
+                    observeds.add(n.name().toString());
                 }
-                return !"Unobserved Confounders".equals(o.toString());
-            }).map(n -> n.name().toString()).collect(Collectors.joining(","));
-            String unobservedConfounders = g.nodes().stream().filter(n -> {
-                Object o = n.attrs().get("label");
-                if (o == null) {
-                    return false;
+                Object s = n.attrs().get(GraphPropertyType.EXPOSURE.toString().toLowerCase());
+                if(s != null) {
+                    source = n.name().toString();
                 }
-                return "Unobserved Confounders".equals(o.toString());
-            }).map(n -> n.name().toString()).collect(Collectors.joining(","));
-            return Pair.of(main, unobservedConfounders);
+                Object t = n.attrs().get(GraphPropertyType.OUTCOME.toString().toLowerCase());
+                if(t!=null){
+                    target = n.name().toString();
+                }
+            }
+            return Arrays.asList(source+","+target,String.join(",",observeds), String.join(",",unobserveds));
         }
     }
 
@@ -251,15 +271,112 @@ public class CausalService {
         Path pngPath = Path.of(absDir, IMAGE_NAME);
         try (InputStream is = ResourceSystemManager.getRuntimeResourceAsStream(getCommonURL(sessionName, CausalPageType.DOT))) {
             MutableGraph g = new Parser().read(is);
-            g.nodes().stream().filter(n -> {
-                Object o = n.attrs().get("label");
-                if (o == null) {
-                    return false;
-                }
-                return "Unobserved Confounders".equals(o.toString());
-            }).forEach(n -> n.attrs().add("label", null));
             Graphviz.fromGraph(g)
                     .basedir(new File(absDir)).render(Format.PNG).toFile(new File(pngPath.toString()));
+        }
+    }
+
+    public static void setGraph(String sessionName, String graphContent) throws IOException {
+        graphContent = graphContent.replaceAll(" ","").replaceAll("[,;]",";\n");
+        String dotUrl = getCommonURL(sessionName, CausalPageType.DOT);
+        String fileContent = String.format(DOT_TEMPLATE, sessionName, graphContent);
+        MutableGraph g = new Parser().read(fileContent);
+        ResourceSystemManager.writeRuntimeResource(dotUrl, g.toString());
+    }
+
+    public static void defineSession(String sessionName, String source, String target) throws IOException, NoSuchFieldException, ParserException {
+        String dotUrl = getCommonURL(sessionName, CausalPageType.DOT);
+        String s = "";
+        try (InputStream is = ResourceSystemManager.getRuntimeResourceAsStream(dotUrl)) {
+            MutableGraph g = new Parser().read(is);
+            boolean hasExposure = false;
+            boolean hasOutcome = false;
+            for (var n : g.nodes()) {
+                if (n.name().toString().equals(source)) {
+                    n.attrs().add(GraphPropertyType.EXPOSURE.toString().toLowerCase(), "");
+                    hasExposure = true;
+                } else {
+                    n.attrs().add(GraphPropertyType.EXPOSURE.toString().toLowerCase(), null);
+                }
+                if (n.name().toString().equals(target)) {
+                    n.attrs().add(GraphPropertyType.OUTCOME.toString().toLowerCase(), "");
+                    hasOutcome = true;
+                } else {
+                    n.attrs().add(GraphPropertyType.OUTCOME.toString().toLowerCase(), null);
+                }
+            }
+            ;
+            if (!hasExposure) {
+                throw new NoSuchFileException(String.format("source node %s is exist", source));
+            } else if (!hasOutcome) {
+                throw new NoSuchFieldException(String.format("target node %s not exist", target));
+            }
+            s = g.toString();
+        }
+        ResourceSystemManager.writeRuntimeResource(dotUrl, s);
+    }
+
+    public static void setUnobserveds(String sessionName, String unobservedStr) throws IOException, NoSuchFieldException {
+        Set<String> unobserveds = Arrays.stream(unobservedStr.split(",")).collect(Collectors.toSet());
+        String dotUrl = getCommonURL(sessionName, CausalPageType.DOT);
+        String newContext = "";
+        try (InputStream is = ResourceSystemManager.getRuntimeResourceAsStream(dotUrl)) {
+            MutableGraph g = new Parser().read(is);
+            for (var n : g.nodes()) {
+                String nodeName = n.name().toString();
+                if (unobserveds.contains(nodeName)) {
+                    n.attrs().add(GraphPropertyType.LATENT.toString().toLowerCase(), "");
+                    unobserveds.remove(nodeName);
+                } else {
+                    n.attrs().add(GraphPropertyType.LATENT.toString().toLowerCase(), null);
+                }
+            }
+            if (!unobserveds.isEmpty()) {
+                throw new NoSuchFieldException(String.format("unobserved node %s not exist",
+                        String.join(",", unobserveds)));
+            }
+            newContext = g.toString();
+        }
+        ResourceSystemManager.writeRuntimeResource(dotUrl, newContext);
+    }
+
+    public static String identify(String sessionName) throws IOException, URISyntaxException {
+        String dotUrl = getCommonURL(sessionName, CausalPageType.DOT);
+        try (InputStream is = ResourceSystemManager.getRuntimeResourceAsStream(dotUrl)) {
+            String dot = new String(is.readAllBytes(), StandardCharsets.UTF_8).replaceAll("^\\s*digraph", "dag");
+            NodeJS nodeJs = NodeJS.createNodeJS();
+            V8Object module = nodeJs.require(ResourceSystemManager.getSourceResourceFile("js/causal_model.js"));
+            V8 rt = nodeJs.getRuntime();
+            rt.add("CausalModel", module);
+            rt.executeVoidScript(
+                    String.format("var model = new CausalModel(`%s`);\n",dot)
+                    + "var identification = JSON.stringify(model.identify());\n"
+            );
+            String ident =  rt.getString("identification");
+            module.release();
+            nodeJs.release();
+            ResourceSystemManager.writeRuntimeResource(getCommonURL(sessionName, CausalPageType.IDENTIFY), ident);
+            return ident;
+        }
+    }
+
+    public static String instrument(String sessionName) throws IOException, URISyntaxException {
+        String dotUrl = getCommonURL(sessionName, CausalPageType.DOT);
+        try (InputStream is = ResourceSystemManager.getRuntimeResourceAsStream(dotUrl)) {
+            String dot = new String(is.readAllBytes(), StandardCharsets.UTF_8).replaceAll("^\\s*digraph", "dag");
+            NodeJS nodeJs = NodeJS.createNodeJS();
+            V8Object module = nodeJs.require(ResourceSystemManager.getSourceResourceFile("js/causal_model.js"));
+            V8 rt = nodeJs.getRuntime();
+            rt.add("CausalModel", module);
+            rt.executeVoidScript(
+                    String.format("var model = new CausalModel(`%s`);\n",dot)
+                            + "var instruments = JSON.stringify(model.instruments());\n"
+            );
+            String inst = rt.getString("instruments");
+            module.release();
+            nodeJs.release();
+            ResourceSystemManager.writeRuntimeResource(getCommonURL(sessionName, CausalPageType.INSTRUMENT), inst);
+            return inst;
         }
     }
 }
