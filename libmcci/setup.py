@@ -1,4 +1,10 @@
 from setuptools import setup, find_packages
+import subprocess
+
+
+# check nodejs dependency
+subprocess.run(['node', '--version'])
+
 
 setup(name='libmcci',
       version='0.1.0',
@@ -10,11 +16,8 @@ setup(name='libmcci',
       keywords=('minecraft', 'mcci', 'casual inference'),
       packages=find_packages(),
       include_package_data=True,
+      package_data={"": ["*.js"]},
       platforms="any",
       zip_safe=False,
-      install_requires=[
-            'numpy','pygraphviz', 'jupyterlab', 'pandas',
-                        ],
-      entry_points={
-          'console_scripts': []}
+      install_requires=['numpy', 'pygraphviz', 'pandas', 'causality'],
       )

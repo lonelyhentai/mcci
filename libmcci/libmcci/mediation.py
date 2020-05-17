@@ -20,7 +20,9 @@ def total_effect(df: pd.DataFrame, x_from, x_to, y, count_name="P", x_name: str 
 
 def nature_indirect_effect(df: pd.DataFrame,
                            do: str = "X", effect: str = "Y", mediation: str = "Z", count_column: str = None) -> float:
+    pass
 
 
 def nature_direct_effect(df: pd.DataFrame,
                          do: str = "X", effect: str = "Y", mediation: str = "Z", count_column: str = None) -> float:
+    pass
