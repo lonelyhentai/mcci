@@ -19,5 +19,5 @@ setup(name='libmcci',
       package_data={"": ["*.js"]},
       platforms="any",
       zip_safe=False,
-      install_requires=['numpy', 'pygraphviz', 'pandas', 'causality'],
+      install_requires=['numpy', 'pygraphviz', 'pandas', 'scikit-learn'],
       )

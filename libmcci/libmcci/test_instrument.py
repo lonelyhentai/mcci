@@ -1,12 +1,10 @@
 import unittest
-import tempfile
-import os
-from .instrument import find_instruments
+from libmcci.instrument import find_instruments
 
 
 class InstrumentTest(unittest.TestCase):
     def test_find_instrument(self):
-        dot_content = """
+        dot_str = """
         digraph {
         "A" []
         "Y" ["outcome"=""]
@@ -19,14 +17,8 @@ class InstrumentTest(unittest.TestCase):
         "Z" -> "X"
         }
     """
-        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", delete=False) as tf:
-            tf.write(dot_content)
-            dot_path = tf.name
-            tf.flush()
-        temp_res = find_instruments(dot_path)
-        print(temp_res)
+        temp_res = find_instruments(dot_str)
         self.assertCountEqual([["Z"]], temp_res)
-        os.remove(dot_path)
 
 
 if __name__ == '__main__':

@@ -16,8 +16,16 @@ public class ResourceSystemManager {
         return new File(CausalEngine.class.getResource("/assets/mcci/"+ path).toURI());
     }
 
+    public static Path getSourceResourceAbsPath(String path) throws URISyntaxException {
+        return getSourceResourceFile(path).toPath().toAbsolutePath();
+    }
+
     public static Path getRuntimeResourceAbsPath(String path) {
         return Paths.get(MinecraftClient.getInstance().getResourcePackDir().getAbsolutePath(), path);
+    }
+
+    public static File getRuntimeResourceFile(String path) {
+        return getRuntimeResourceAbsPath(path).toFile();
     }
 
     public static InputStream getRuntimeResourceAsStream(String path) throws IOException {

@@ -96,7 +96,8 @@ public class CausalService {
             pb.command("resourcepacks/libmcci/Scripts/jupyter",
                     "lab", "--port=" + port, "--no-browser",
                     "--NotebookApp.token=''",
-                    "--notebook-dir='resourcepacks/mcci'")
+                    "--notebook-dir='resourcepacks/mcci'"
+                    )
                     .redirectError(ProcessBuilder.Redirect.INHERIT)
                     .redirectOutput(ProcessBuilder.Redirect.INHERIT);
             Process process = pb.start();
