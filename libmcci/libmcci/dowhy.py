@@ -1,7 +1,7 @@
 from subprocess import Popen, PIPE, STDOUT
 from os import path
 import json
-from typing import List
+from typing import List, Tuple, Optional
 import tempfile
 import pandas as pd
 
@@ -57,14 +57,17 @@ def identification_parse(content: str) -> List[DirectIdentification]:
     return res
 
 
-def identify(dot_str: str) -> List[DirectIdentification]:
+def identify(dot_str: str, paths: Optional[List[str]] = None) -> List[DirectIdentification]:
     with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8") as tf:
         tf.write(dot_str)
         tf.flush()
         dot_path = tf.name
-        with Popen(
-                ["node", path.join(path.dirname(__file__), "lib", "run.js"), "--dot", dot_path, "--mode", "identify"],
-                stdout=PIPE, stderr=STDOUT) as process:
+        arguments = ["node", path.join(path.dirname(__file__), "lib", "run.js"), "--dot", dot_path, "--mode",
+                     "identify"]
+        if paths is not None:
+            arguments.append("--path")
+            arguments.append(f"'${','.join(list(paths))}'")
+        with Popen(arguments, stdout=PIPE, stderr=STDOUT) as process:
             process.wait()
             if process.returncode != 0:
                 raise RuntimeError(process.stderr.read().decode("utf-8"))
@@ -72,12 +75,38 @@ def identify(dot_str: str) -> List[DirectIdentification]:
     return identification_parse(s)
 
 
-def estimate_direct_effect(estimator, data: pd.DataFrame, exposure: str, outcome: str, admissable: List[str],
+def estimate_atomic_effect(estimator, admissable: Admissable, data: pd.DataFrame,
                            *args, **kwargs):
-    estimator.fit(data[[exposure, *admissable]], data[outcome], *args, **kwargs)
+    exposure = admissable.exposure
+    outcome = admissable.outcome
+    ad = admissable.admissable
+    estimator.fit(data[[exposure, *ad]], data[outcome], *args, **kwargs)
     return estimator
 
 
-def predict_direct_effect(estimator, data: pd.DataFrame, exposure: str, admissable: List[str],
-                          *args, **kwargs) -> pd.Series:
-    return estimator.predict(data[[exposure, *admissable]], *args, **kwargs)
+def estimate(estimators: List, admissables: List[Admissable], data: List[pd.DataFrame], *args, **kwargs) -> List:
+    res = []
+    for (i, e) in enumerate(estimators):
+        d = data[i]
+        ad = admissables[i]
+        res.append(estimate_atomic_effect(e, ad, d, *args, *kwargs))
+    return res
+
+
+def use_atomic_effect(estimator, admissable: Admissable, data: pd.DataFrame, *args, **kwargs
+                      ) -> pd.Series:
+    return estimator.predict(data[[admissable.exposure, *admissable.admissable]], *args, **kwargs)
+
+
+def use(estimators: List, admissables: List[Admissable], test: pd.DataFrame,
+        *args, **kwargs) -> pd.DataFrame:
+    mapping = {}
+    for f in test.columns.to_list():
+        mapping[f] = test[f]
+    for (i, e) in enumerate(estimators):
+        ad = admissables[i]
+        curr_test = {}
+        for field in [ad.exposure, *ad.admissable]:
+            curr_test[field] = mapping[field]
+        mapping[ad.outcome] = use_atomic_effect(e, ad, pd.DataFrame(curr_test), *args, **kwargs)
+    return pd.DataFrame(mapping)

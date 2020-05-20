@@ -39,8 +39,17 @@ module.exports = class CausalModel {
         return res;
     }
 
-    identify() {
-        const paths = this.getCausalPaths();
+    identify(pathstr) {
+        let paths;
+        if(!pathstr) {
+            paths = this.getCausalPaths();
+        } else {
+            const nodes = pathstr.split(',');
+            paths = [];
+            for(let i=0; i<nodes.length-1;i++) {
+                paths.push(this.g.getEdge(nodes[i], nodes[i+1]));
+            }
+        }
         const res = [];
         for(const p of paths) {
             const gclone = this.g.clone();

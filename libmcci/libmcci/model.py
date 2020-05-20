@@ -1,10 +1,11 @@
-from typing import List, Optional, Iterable
+from typing import List, Optional, Iterable, Tuple
 import pygraphviz as g
 import pandas as pd
 
-from libmcci.dowhy import identify, estimate_direct_effect, Admissable, predict_direct_effect, DirectIdentification
+from libmcci.dowhy import Admissable, DirectIdentification, identify, \
+    estimate_atomic_effect, estimate, use_atomic_effect, use
 from libmcci.exceptions import CausalModelNotDefinedError
-from libmcci.instrument import find_instruments
+from libmcci.instrument import find_instruments, estimate_instrument, use_instrument
 
 
 class CausalModel:
@@ -111,33 +112,40 @@ class CausalModel:
     def defined(self) -> bool:
         return (self.exposure is not None) or (self.outcome is not None)
 
-    def estimate_direct_effect(self, estimator, data: pd.DataFrame, admissable: Admissable, *args, **kwargs):
-        return estimate_direct_effect(estimator, data, admissable.exposure, admissable.outcome,
-                                      admissable.admissable, *args, **kwargs)
+    def estimate_atomic_effect(self, estimator, admissable: Admissable, data: pd.DataFrame,
+                               *args, **kwargs):
+        return estimate_atomic_effect(estimator, admissable, data, *args, **kwargs)
 
-    def predict_direct_effect(self, estimator, test: pd.DataFrame, admissable: Admissable, *args,
-                              **kwargs) -> pd.Series:
-        return predict_direct_effect(estimator, test, admissable.exposure, admissable.admissable, *args,
-                                     **kwargs)
+    def use_atomic_effect(self, estimator, admissable: Admissable, test: pd.DataFrame, *args,
+                          **kwargs) -> pd.Series:
+        return use_atomic_effect(estimator, admissable, test, *args, **kwargs)
 
-    def estimate(self, estimators: List, data: List[pd.DataFrame],
-                 admissables: List[Admissable], *args, **kwargs) -> List:
-        res = []
-        for (i, e) in enumerate(estimators):
-            d = data[i]
-            ad = admissables[i]
-            res.append(self.estimate_direct_effect(e, d, ad, *args, *kwargs))
-        return res
+    def estimate(self, estimators: List, admissables: List[Admissable], data: List[pd.DataFrame], *args,
+                 **kwargs) -> List:
+        return estimate(estimators, admissables, data, *args, **kwargs)
 
-    def predict(self, estimators: List, test: pd.DataFrame,
-                admissables: List[Admissable], *args, **kwargs) -> pd.DataFrame:
-        mapping = {}
-        for f in test.columns.to_list():
-            mapping[f] = test[f]
-        for (i, e) in enumerate(estimators):
-            ad = admissables[i]
-            curr_test = {}
-            for field in [ad.exposure, *ad.admissable]:
-                curr_test[field] = mapping[field]
-            mapping[ad.outcome] = self.predict_direct_effect(e, pd.DataFrame(curr_test), ad, *args, **kwargs)
-        return pd.DataFrame(mapping)
+    def use(self, estimators: List, admissables: List[Admissable], test: pd.DataFrame,
+            *args, **kwargs) -> pd.DataFrame:
+        return use(estimators, admissables, test, *args, **kwargs)
+
+    def estimate_instrument(self,
+                            to_outcome_estimators: List,
+                            to_outcome_admissables: List[Admissable],
+                            to_outcome_data: List[pd.DataFrame],
+                            to_exposure_estimators: List,
+                            to_exposure_admissables: List[Admissable],
+                            to_exposure_data: List[pd.DataFrame],
+                            *args, **kwargs) -> Tuple[List, List]:
+        return estimate_instrument(to_outcome_estimators, to_outcome_admissables, to_outcome_data,
+                                   to_exposure_estimators, to_exposure_admissables, to_exposure_data, *args, **kwargs)
+
+    def use_instrument(self,
+                       to_outcome_estimators,
+                       to_outcome_admissables: List[Admissable],
+                       to_exposure_estimators,
+                       to_exposure_admissables: List[Admissable],
+                       test: pd.DataFrame,
+                       estimator_fn,
+                       *args, **kwargs) -> pd.DataFrame:
+        return use_instrument(to_outcome_estimators, to_outcome_admissables, to_exposure_estimators,
+                              to_exposure_admissables, test, estimator_fn, *args, **kwargs)
