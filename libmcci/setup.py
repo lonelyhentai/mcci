@@ -1,10 +1,11 @@
 from setuptools import setup, find_packages
-import subprocess
-
+from subprocess import Popen
 
 # check nodejs dependency
-subprocess.run(['node', '--version'])
-
+with Popen(['node', '--version']) as process:
+    process.wait()
+    if process.returncode != 0:
+        raise EnvironmentError("use have node installed")
 
 setup(name='libmcci',
       version='0.1.0',

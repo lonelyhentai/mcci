@@ -1,8 +1,9 @@
-from subprocess import Popen, PIPE, STDOUT
-from os import path
 import json
-from typing import List, Tuple, Optional
 import tempfile
+from os import path
+from subprocess import Popen, PIPE, STDOUT
+from typing import List, Optional
+
 import pandas as pd
 
 
@@ -19,6 +20,12 @@ class Admissable:
 
     def __hash__(self) -> int:
         return hash((self.exposure, self.outcome, tuple(sorted(map(lambda x: tuple(sorted(x)), self.admissable)))))
+
+    def __str__(self) -> str:
+        return str((self.exposure, self.outcome, self.admissable))
+
+    def __repr__(self):
+        return str(self)
 
 
 class DirectIdentification:
@@ -43,6 +50,12 @@ class DirectIdentification:
         if index < 0 or index >= len(self.admissables):
             raise OverflowError(f"{index} out of bound")
         return Admissable(self.exposure, self.outcome, self.admissables[index])
+
+    def __str__(self) -> str:
+        return str((self.exposure, self.outcome, self.admissables))
+
+    def __repr__(self):
+        return str(self)
 
 
 def identification_parse(content: str) -> List[DirectIdentification]:

@@ -1,0 +1,9 @@
+digraph G {
+    U[latent=""]
+    Y[outcome=""]
+    X[exposure=" "]
+    U -> X;
+    U -> Y;
+    X -> Y;
+    Z -> X;
+}

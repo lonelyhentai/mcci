@@ -4,4 +4,4 @@ conda install -c alubbock graphviz pygraphviz
 conda install nodejs
 libmcci-env/Scripts/dot -c
 libmcci-env/Scripts/pip install jupyterlab
-libmcci-env/Scripts/pip install .
+libmcci-env/Scripts/pip -e install .

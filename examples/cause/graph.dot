@@ -1,0 +1,12 @@
+digraph {
+    graph[rankdir=LR];
+    L;
+    B;
+    S;
+    D;
+    P;
+    L -> B;
+    B -> S;
+    S -> P;
+    D -> P;
+}

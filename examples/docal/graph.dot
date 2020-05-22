@@ -1,0 +1,14 @@
+digraph {
+"C" ["latent"=""]
+"A" []
+"B" []
+"X" ["exposure"=""]
+"Y" ["outcome"=""]
+"A" -> "B"
+"A" -> "X"
+"B" -> "X"
+"X" -> "Y"
+"C" -> "B"
+"B" -> "Y"
+"C" -> "Y"
+}

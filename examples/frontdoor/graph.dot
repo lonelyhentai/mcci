@@ -1,0 +1,10 @@
+digraph {
+"A" []
+"Y" ["outcome"=""]
+"U" ["latent"=""]
+"X" ["exposure"=""]
+"A" -> "Y"
+"U" -> "X"
+"U" -> "Y"
+"X" -> "A"
+}

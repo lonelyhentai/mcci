@@ -19,10 +19,12 @@ if (mode !== "identify" && mode !== "instrument") {
 let path = null;
 if(mode==="identify") {
     const pathArgIndex = process.argv.indexOf('--path');
-    if (process.argv.length < pathArgIndex + 2) {
+    if (pathArgIndex > 0 && process.argv.length < pathArgIndex + 2) {
         throw new SyntaxError("path argument not found when use '--path <path>'");
     }
-    path = process.argv[pathArgIndex + 1];
+    if(pathArgIndex!==-1) {
+        path = process.argv[pathArgIndex + 1];
+    }
 }
 
 const data = fs.readFileSync(dotPath, {encoding: 'utf-8'});
